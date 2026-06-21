@@ -56,36 +56,73 @@ h2{
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
 
-    <button onclick="login()">Login</button>
+    <button id="loginBtn" onclick="login()">Login</button>
 
     <p id="msg" style="text-align:center;color:red;margin-top:10px;"></p>
 </div>
 
 <script>
+if(!window.supabase){
+    document.getElementById("msg").innerText =
+        "Failed to load the Supabase library from the CDN. Check your internet connection " +
+        "or whether an ad-blocker/firewall is blocking cdn.jsdelivr.net.";
+    throw new Error("window.supabase is undefined — supabase-js script did not load.");
+}
+
 const supabase = window.supabase.createClient(
     "https://uulptnmglchzvdsausrh.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
 );
 
 async function login(){
-    const email = document.getElementById("email").value;
+    const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
+    const msg = document.getElementById("msg");
+    const btn = document.getElementById("loginBtn");
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-    });
+    msg.style.color = "red";
+    msg.innerText = "";
 
-    if(error){
-        document.getElementById("msg").innerText = error.message;
+    if(!email || !password){
+        msg.innerText = "Please enter both email and password.";
         return;
     }
 
-    // store session
-    localStorage.setItem("sb-session", JSON.stringify(data.session));
+    btn.disabled = true;
+    btn.innerText = "Logging in...";
 
-    alert("Login successful!");
-    window.location.href = "admin.html";
+    try{
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+
+        if(error){
+            console.error("Supabase login error:", error);
+            msg.innerText = error.message;
+            return;
+        }
+
+        // store session
+        localStorage.setItem("sb-session", JSON.stringify(data.session));
+
+        msg.style.color = "green";
+        msg.innerText = "Login successful! Redirecting...";
+
+        window.location.href = "admin.html";
+    }
+    catch(err){
+        // This catches network errors, CORS errors, blocked requests, etc.
+        // that signInWithPassword would otherwise fail on silently.
+        console.error("Login request failed:", err);
+        msg.innerText = "Login request failed: " + err.message +
+            " (check the browser console for details — this usually means " +
+            "the page isn't being served over http/https, or the request was blocked).";
+    }
+    finally{
+        btn.disabled = false;
+        btn.innerText = "Login";
+    }
 }
 </script>
 

@@ -1,41 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Keezhakundalapaadi Admin Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Keezhakundalapaadi Admin Panel</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f5f5f5;
-margin:0;
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f4f4f4;
 }
 
 .header{
-background:green;
-color:white;
-padding:15px;
-font-size:24px;
+    background:green;
+    color:white;
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
 }
 
 .container{
-padding:20px;
+    padding:20px;
 }
 
 .card{
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-box-shadow:0px 0px 10px #ddd;
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 button{
-padding:10px;
-background:green;
-color:white;
-border:none;
-cursor:pointer;
+    background:green;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    margin-bottom:10px;
+    box-sizing:border-box;
+}
+
+.logout{
+    background:red;
 }
 
 </style>
@@ -52,27 +73,119 @@ cursor:pointer;
 
 <div class="card">
 <h2>👑 Super Admin</h2>
-<p>Suresh</p>
+<p><b>Suresh</b></p>
+<button class="logout" onclick="logout()">Logout</button>
 </div>
 
 <div class="card">
-<h2>📹 Pending Videos</h2>
-<p>No videos pending</p>
-<button>Approve</button>
+<h2>📹 Upload Village Video</h2>
+
+<input type="text" id="videoTitle"
+placeholder="Video Title">
+
+<input type="text" id="videoUrl"
+placeholder="YouTube Video URL">
+
+<button onclick="uploadVideo()">
+Upload Video
+</button>
+
+<p id="videoMsg"></p>
+
 </div>
 
 <div class="card">
-<h2>📢 Announcements</h2>
-<p>No announcements</p>
-<button>Publish</button>
+<h2>📢 Add Announcement</h2>
+
+<input type="text" id="announcementTitle"
+placeholder="Announcement Title">
+
+<textarea id="announcementText"
+placeholder="Announcement Details"></textarea>
+
+<button onclick="publishAnnouncement()">
+Publish Announcement
+</button>
+
+<p id="announcementMsg"></p>
+
+</div>
+
+<div class="card">
+<h2>📋 Pending Approvals</h2>
+
+<p>
+Future videos and announcements will appear here for approval.
+</p>
+
+<button>
+Approve Selected
+</button>
+
 </div>
 
 <div class="card">
 <h2>👥 Admin Management</h2>
-<button>Add Admin</button>
+
+<p>Future feature:</p>
+
+<ul>
+<li>Add Admin</li>
+<li>Remove Admin</li>
+<li>Assign Roles</li>
+<li>Manage Permissions</li>
+</ul>
+
+</div>
+
+<div class="card">
+<h2>📊 Village Statistics</h2>
+
+<p>Total Videos: 0</p>
+<p>Total Announcements: 0</p>
+<p>Total Admins: 1</p>
 </div>
 
 </div>
+
+<script>
+
+function logout(){
+    alert("Logged Out Successfully");
+    window.location.href="login.html";
+}
+
+function uploadVideo(){
+
+let title =
+document.getElementById("videoTitle").value;
+
+if(title==""){
+    alert("Enter Video Title");
+    return;
+}
+
+document.getElementById("videoMsg")
+.innerHTML =
+"✅ Video submitted successfully";
+}
+
+function publishAnnouncement(){
+
+let title =
+document.getElementById("announcementTitle").value;
+
+if(title==""){
+    alert("Enter Announcement Title");
+    return;
+}
+
+document.getElementById("announcementMsg")
+.innerHTML =
+"✅ Announcement submitted successfully";
+}
+
+</script>
 
 </body>
 </html>

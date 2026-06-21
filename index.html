@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Keezhakundalapaadi Village Portal</title>
 
 <style>
@@ -89,6 +90,10 @@ border-radius:5px;
 margin-top:10px;
 }
 
+.video-card{
+margin-top:20px;
+}
+
 footer{
 background:#222;
 color:white;
@@ -128,6 +133,7 @@ Admin Dashboard
 <section id="updates" class="section">
 
 <div class="card">
+
 <h2>📢 Latest Updates</h2>
 
 <ul>
@@ -146,12 +152,9 @@ Admin Dashboard
 
 <h2>📹 Village Videos</h2>
 
-<p>Add YouTube Video Links from Admin Panel.</p>
-
-<iframe width="100%" height="400"
-src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-allowfullscreen>
-</iframe>
+<div id="videoContainer">
+Loading videos...
+</div>
 
 </div>
 
@@ -183,7 +186,7 @@ allowfullscreen>
 
 <h2>📺 Live Stream</h2>
 
-<p>Village Live Events will be streamed here.</p>
+<p>Village Live Events will appear here.</p>
 
 <a class="btn"
 href="https://youtube.com"
@@ -200,13 +203,9 @@ Watch Live </a>
 
 <h2>📞 Contact</h2>
 
-<p>
-Website Admin: Suresh
-</p>
+<p>Website Admin : Suresh</p>
 
-<p>
-Village Portal - Keezhakundalapaadi
-</p>
+<p>Keezhakundalapaadi Village Portal</p>
 
 </div>
 
@@ -214,15 +213,89 @@ Village Portal - Keezhakundalapaadi
 
 <footer>
 
-<p>
-© 2026 Keezhakundalapaadi Village Portal
-</p>
+<p>© 2026 Keezhakundalapaadi Village Portal</p>
 
-<p>
-Managed by Super Admin Suresh
-</p>
+<p>Managed by Super Admin Suresh</p>
 
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const client = supabase.createClient(
+"https://uulptnmglchzvdsausrh.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
+);
+
+loadVideos();
+
+async function loadVideos(){
+
+const { data, error } =
+await client
+.from("videos")
+.select("*")
+.eq("status","approved");
+
+if(error){
+
+document.getElementById("videoContainer").innerHTML =
+"❌ Unable to load videos";
+
+console.log(error);
+
+return;
+}
+
+if(data.length===0){
+
+document.getElementById("videoContainer").innerHTML =
+"No videos available";
+
+return;
+}
+
+let html = "";
+
+data.forEach(video=>{
+
+let youtubeId = "";
+
+if(video.youtube_link &&
+video.youtube_link.includes("v=")){
+
+youtubeId =
+video.youtube_link
+.split("v=")[1]
+.split("&")[0];
+
+html += `
+
+<div class="video-card">
+
+<h3>${video.title}</h3>
+
+<iframe
+width="100%"
+height="400"
+src="https://www.youtube.com/embed/${youtubeId}"
+allowfullscreen>
+</iframe>
+
+</div>
+
+`;
+
+}
+
+});
+
+document.getElementById("videoContainer").innerHTML = html;
+
+}
+
+</script>
 
 </body>
 </html>

@@ -158,7 +158,6 @@ style="background:white;color:green;">
 <a href="#updates">Updates</a>
 <a href="#videos">Videos</a>
 <a href="#gallery">Gallery</a>
-<a href="#gallery">Gallery</a>
 <a href="gallery.html">📸 Full Gallery</a>
 <a href="#live">Live</a>
 <a href="#contact">Contact</a>
@@ -234,9 +233,7 @@ class="section">
 
 <h2>📡 Live Stream</h2>
 
-<p>
-Village Live Events will appear here.
-</p>
+<div id="liveContainer">Loading live stream...</div>
 
 <br>
 
@@ -599,8 +596,70 @@ async function loadComments(videoId){
     .innerHTML = html;
 }
 
+
+async function loadLiveStream(){
+
+    const { data,error } =
+    await client
+    .from("live_stream")
+    .select("*")
+    .eq("status","active")
+    .order("created_at",{ascending:false})
+    .limit(1);
+
+    const div =
+    document.getElementById("liveContainer");
+
+    if(error || !div){
+        return;
+    }
+
+    if(!data || data.length===0){
+        div.innerHTML = "No live stream available.";
+        return;
+    }
+
+    const live = data[0];
+
+    let youtubeId = "";
+
+    if(
+        live.youtube_link &&
+        live.youtube_link.includes("watch?v=")
+    ){
+        youtubeId =
+        live.youtube_link
+        .split("v=")[1]
+        .split("&")[0];
+    }
+    else if(
+        live.youtube_link &&
+        live.youtube_link.includes("youtu.be/")
+    ){
+        youtubeId =
+        live.youtube_link
+        .split("youtu.be/")[1]
+        .split("?")[0];
+    }
+
+    if(!youtubeId){
+        div.innerHTML = "Invalid live stream link.";
+        return;
+    }
+
+    div.innerHTML = `
+        <h3>${live.title}</h3>
+        <iframe
+        src="https://www.youtube.com/embed/${youtubeId}"
+        allowfullscreen>
+        </iframe>
+    `;
+}
+
+
 loadAnnouncements();
 loadVideos();
+loadLiveStream();
 
 </script>
 

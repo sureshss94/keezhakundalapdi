@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Keezhakundalapaadi Admin Panel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -59,6 +62,16 @@ input, textarea{
     background:red;
 }
 
+.success{
+    color:green;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -80,10 +93,14 @@ input, textarea{
 <div class="card">
 <h2>📹 Upload Village Video</h2>
 
-<input type="text" id="videoTitle"
+<input
+type="text"
+id="videoTitle"
 placeholder="Video Title">
 
-<input type="text" id="videoUrl"
+<input
+type="text"
+id="videoUrl"
 placeholder="YouTube Video URL">
 
 <button onclick="uploadVideo()">
@@ -95,13 +112,18 @@ Upload Video
 </div>
 
 <div class="card">
+
 <h2>📢 Add Announcement</h2>
 
-<input type="text" id="announcementTitle"
+<input
+type="text"
+id="announcementTitle"
 placeholder="Announcement Title">
 
-<textarea id="announcementText"
-placeholder="Announcement Details"></textarea>
+<textarea
+id="announcementText"
+placeholder="Announcement Details">
+</textarea>
 
 <button onclick="publishAnnouncement()">
 Publish Announcement
@@ -112,22 +134,18 @@ Publish Announcement
 </div>
 
 <div class="card">
+
 <h2>📋 Pending Approvals</h2>
 
 <p>
-Future videos and announcements will appear here for approval.
+Future videos and announcements will appear here.
 </p>
-
-<button>
-Approve Selected
-</button>
 
 </div>
 
 <div class="card">
-<h2>👥 Admin Management</h2>
 
-<p>Future feature:</p>
+<h2>👥 Admin Management</h2>
 
 <ul>
 <li>Add Admin</li>
@@ -139,50 +157,118 @@ Approve Selected
 </div>
 
 <div class="card">
+
 <h2>📊 Village Statistics</h2>
 
-<p>Total Videos: 0</p>
-<p>Total Announcements: 0</p>
+<p>Total Videos: Managed in Supabase</p>
+<p>Total Announcements: Managed in Supabase</p>
 <p>Total Admins: 1</p>
+
 </div>
 
 </div>
 
 <script>
 
+const client = supabase.createClient(
+"https://uulptnmglchzvdsausrh.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
+);
+
 function logout(){
+
     alert("Logged Out Successfully");
-    window.location.href="login.html";
+
+    window.location.href = "login.html";
 }
 
-function uploadVideo(){
+async function uploadVideo(){
 
-let title =
-document.getElementById("videoTitle").value;
+    let title =
+    document.getElementById("videoTitle").value;
 
-if(title==""){
-    alert("Enter Video Title");
-    return;
+    let url =
+    document.getElementById("videoUrl").value;
+
+    if(title === "" || url === ""){
+
+        alert("Please fill all fields");
+        return;
+    }
+
+    const { error } =
+    await client
+    .from("videos")
+    .insert([
+        {
+            title:title,
+            youtube_link:url,
+            status:"approved",
+            uploaded_by:"Suresh"
+        }
+    ]);
+
+    if(error){
+
+        console.log(error);
+
+        document.getElementById("videoMsg")
+        .innerHTML =
+        "<span class='error'>❌ Upload Failed</span>";
+
+    }else{
+
+        document.getElementById("videoMsg")
+        .innerHTML =
+        "<span class='success'>✅ Video Uploaded Successfully</span>";
+
+        document.getElementById("videoTitle").value = "";
+        document.getElementById("videoUrl").value = "";
+    }
 }
 
-document.getElementById("videoMsg")
-.innerHTML =
-"✅ Video submitted successfully";
-}
+async function publishAnnouncement(){
 
-function publishAnnouncement(){
+    let title =
+    document.getElementById("announcementTitle").value;
 
-let title =
-document.getElementById("announcementTitle").value;
+    let details =
+    document.getElementById("announcementText").value;
 
-if(title==""){
-    alert("Enter Announcement Title");
-    return;
-}
+    if(title === ""){
 
-document.getElementById("announcementMsg")
-.innerHTML =
-"✅ Announcement submitted successfully";
+        alert("Enter Announcement Title");
+        return;
+    }
+
+    const { error } =
+    await client
+    .from("announcements")
+    .insert([
+        {
+            title:title,
+            description:details,
+            status:"approved"
+        }
+    ]);
+
+    if(error){
+
+        console.log(error);
+
+        document.getElementById("announcementMsg")
+        .innerHTML =
+        "<span class='error'>❌ Save Failed</span>";
+
+    }else{
+
+        document.getElementById("announcementMsg")
+        .innerHTML =
+        "<span class='success'>✅ Announcement Published</span>";
+
+        document.getElementById("announcementTitle").value = "";
+        document.getElementById("announcementText").value = "";
+    }
 }
 
 </script>

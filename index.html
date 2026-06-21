@@ -1,294 +1,232 @@
-<!DOCTYPE html>
+<body>
 
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keezhakundalapaadi Village Portal</title>
+<header style="background:green;color:white;padding:20px;text-align:center;">
+  <h1>🏡 Keezhakundalapaadi Village Portal</h1>
+  <p>Welcome to our village website</p>
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+  <a href="login.html"
+     style="
+      display:inline-block;
+      margin-top:15px;
+      padding:10px 20px;
+      background:white;
+      color:green;
+      text-decoration:none;
+      border-radius:5px;
+      font-weight:bold;
+     ">
+    🔐 Admin Login
+  </a>
+</header>
 
-body{
-font-family:Arial, sans-serif;
-background:#f4f4f4;
-}
+<main style="padding:20px;max-width:1200px;margin:auto;">
 
-header{
-background:green;
-color:white;
-padding:20px;
-text-align:center;
-}
+  <!-- Latest Updates -->
+  <section style="margin-bottom:40px;">
+    <h2>📢 Latest Updates</h2>
 
-header h1{
-font-size:36px;
-}
+    <div id="announcementContainer">
+      Loading announcements...
+    </div>
+  </section>
 
-nav{
-background:#006400;
-padding:10px;
-text-align:center;
-}
+  <!-- Videos -->
+  <section style="margin-bottom:40px;">
+    <h2>📹 Village Videos</h2>
 
-nav a{
-color:white;
-text-decoration:none;
-margin:15px;
-font-weight:bold;
-}
+    <div id="videoContainer">
+      Loading videos...
+    </div>
+  </section>
 
-.hero{
-background:white;
-padding:40px;
-text-align:center;
-}
+  <!-- Gallery Placeholder -->
+  <section style="margin-bottom:40px;">
+    <h2>📸 Village Gallery</h2>
+    <p>Gallery upload feature coming soon.</p>
+  </section>
 
-.hero h2{
-color:green;
-margin-bottom:15px;
-}
+  <!-- Live Stream Placeholder -->
+  <section style="margin-bottom:40px;">
+    <h2>📡 Live Stream</h2>
+    <p>Live streaming feature coming soon.</p>
+  </section>
 
-.section{
-padding:30px;
-}
+  <!-- Contact -->
+  <section style="margin-bottom:40px;">
+    <h2>📞 Contact</h2>
+    <p>Website Admin: Suresh (Super Admin)</p>
+  </section>
 
-.card{
-background:white;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
+</main>
 
-.gallery{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:15px;
-}
-
-.gallery img{
-width:100%;
-height:200px;
-object-fit:cover;
-border-radius:10px;
-}
-
-.btn{
-display:inline-block;
-background:green;
-color:white;
-padding:10px 20px;
-text-decoration:none;
-border-radius:5px;
-margin-top:10px;
-}
-
-.video-card{
-margin-top:20px;
-padding:15px;
-border:1px solid #ddd;
-border-radius:10px;
-}
-
-.video-card h3{
-margin-bottom:10px;
-color:#006400;
-}
-
-footer{
-background:#222;
-color:white;
-text-align:center;
-padding:20px;
-margin-top:20px;
-}
-</style>
+<footer style="background:#222;color:white;padding:20px;text-align:center;">
+  © 2026 Keezhakundalapaadi Village Portal
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-</head>
-
-<body>
-
-<header>
-<h1>🏡 Keezhakundalapaadi Village Portal</h1>
-<p>Village News • Events • Videos • Announcements</p>
-</header>
-
-<nav>
-<a href="#updates">Updates</a>
-<a href="#videos">Videos</a>
-<a href="#gallery">Gallery</a>
-<a href="#live">Live</a>
-<a href="login.html">Admin Login</a>
-</nav>
-
-<section class="hero">
-<h2>Welcome to Keezhakundalapaadi</h2>
-<p>Official Village Information Portal</p>
-
-<a class="btn" href="login.html">
-Admin Dashboard
-</a>
-</section>
-
-<section id="updates" class="section">
-<div class="card">
-<h2>📢 Latest Updates</h2>
-
-<ul>
-<li>Village Website Successfully Launched</li>
-<li>Upcoming Temple Festival Updates</li>
-<li>Village Development Announcements</li>
-</ul>
-</div>
-</section>
-
-<section id="videos" class="section">
-<div class="card">
-
-<h2>📹 Village Videos</h2>
-
-<div id="videoContainer">
-Loading videos...
-</div>
-
-</div>
-</section>
-
-<section id="gallery" class="section">
-<div class="card">
-
-<h2>📸 Village Gallery</h2>
-
-<div class="gallery">
-<img src="https://picsum.photos/600/400?1">
-<img src="https://picsum.photos/600/400?2">
-<img src="https://picsum.photos/600/400?3">
-</div>
-
-</div>
-</section>
-
-<section id="live" class="section">
-<div class="card">
-
-<h2>📺 Live Stream</h2>
-
-<p>Village Live Events will appear here.</p>
-
-<a class="btn"
-href="https://youtube.com"
-target="_blank">
-Watch Live </a>
-
-</div>
-</section>
-
-<section class="section">
-<div class="card">
-
-<h2>📞 Contact</h2>
-
-<p>Website Admin : Suresh</p>
-<p>Keezhakundalapaadi Village Portal</p>
-
-</div>
-</section>
-
-<footer>
-<p>© 2026 Keezhakundalapaadi Village Portal</p>
-<p>Managed by Super Admin Suresh</p>
-</footer>
-
 <script>
-
 const client = supabase.createClient(
-"https://uulptnmglchzvdsausrh.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
+  "https://uulptnmglchzvdsausrh.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
 );
 
+/* ==========================
+   LOAD ANNOUNCEMENTS
+========================== */
+
+async function loadAnnouncements() {
+
+  const { data, error } = await client
+    .from("announcements")
+    .select("*")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log(error);
+
+    document.getElementById(
+      "announcementContainer"
+    ).innerHTML =
+      "<p>Unable to load announcements.</p>";
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    document.getElementById(
+      "announcementContainer"
+    ).innerHTML =
+      "<p>No announcements available.</p>";
+
+    return;
+  }
+
+  let html = "";
+
+  data.forEach(item => {
+    html += `
+      <div
+        style="
+          background:white;
+          padding:20px;
+          margin-bottom:20px;
+          border-radius:10px;
+          box-shadow:0 0 10px rgba(0,0,0,0.1);
+        "
+      >
+        <h3>${item.title}</h3>
+
+        <p>${item.description}</p>
+
+        <small>
+          ${new Date(item.created_at).toLocaleString()}
+        </small>
+      </div>
+    `;
+  });
+
+  document.getElementById(
+    "announcementContainer"
+  ).innerHTML = html;
+}
+
+/* ==========================
+   LOAD VIDEOS
+========================== */
+
+async function loadVideos() {
+
+  const { data, error } = await client
+    .from("videos")
+    .select("*")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log(error);
+
+    document.getElementById(
+      "videoContainer"
+    ).innerHTML =
+      "<p>Unable to load videos.</p>";
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    document.getElementById(
+      "videoContainer"
+    ).innerHTML =
+      "<p>No videos available.</p>";
+
+    return;
+  }
+
+  let html = "";
+
+  data.forEach(video => {
+
+    let youtubeId = "";
+
+    if (
+      video.youtube_link &&
+      video.youtube_link.includes("watch?v=")
+    ) {
+      youtubeId = video.youtube_link
+        .split("v=")[1]
+        .split("&")[0];
+    }
+    else if (
+      video.youtube_link &&
+      video.youtube_link.includes("youtu.be/")
+    ) {
+      youtubeId = video.youtube_link
+        .split("youtu.be/")[1]
+        .split("?")[0];
+    }
+
+    if (!youtubeId) {
+      return;
+    }
+
+    html += `
+      <div
+        style="
+          background:white;
+          padding:20px;
+          margin-bottom:25px;
+          border-radius:10px;
+          box-shadow:0 0 10px rgba(0,0,0,0.1);
+        "
+      >
+        <h3>${video.title}</h3>
+
+        <iframe
+          width="100%"
+          height="400"
+          src="https://www.youtube.com/embed/${youtubeId}"
+          frameborder="0"
+          allowfullscreen
+        >
+        </iframe>
+      </div>
+    `;
+  });
+
+  document.getElementById(
+    "videoContainer"
+  ).innerHTML = html;
+}
+
+/* ==========================
+   START
+========================== */
+
+loadAnnouncements();
 loadVideos();
-
-async function loadVideos(){
-
-const { data, error } =
-await client
-.from("videos")
-.select("*")
-.eq("status","approved");
-
-if(error){
-
-document.getElementById("videoContainer").innerHTML =
-"❌ Unable to load videos";
-
-console.log(error);
-return;
-}
-
-if(!data || data.length === 0){
-
-document.getElementById("videoContainer").innerHTML =
-"No videos available";
-
-return;
-}
-
-let html = "";
-
-data.forEach(video=>{
-
-let youtubeId = "";
-
-if(video.youtube_link){
-
-if(video.youtube_link.includes("watch?v=")){
-
-youtubeId =
-video.youtube_link.split("v=")[1].split("&")[0];
-
-}
-else if(video.youtube_link.includes("youtu.be/")){
-
-youtubeId =
-video.youtube_link.split("youtu.be/")[1].split("?")[0];
-
-}
-
-if(youtubeId){
-
-html += `
-<div class="video-card">
-
-<h3>${video.title}</h3>
-
-<iframe
-width="100%"
-height="400"
-src="https://www.youtube.com/embed/${youtubeId}"
-title="${video.title}"
-allowfullscreen>
-</iframe>
-
-</div>
-`;
-}
-
-}
-
-});
-
-document.getElementById("videoContainer").innerHTML = html;
-
-}
 
 </script>
 
 </body>
-</html>

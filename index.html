@@ -1,15 +1,228 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="en">
 <head>
-<title>Keezhakundalapaadi</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keezhakundalapaadi Village Portal</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+background:#f4f4f4;
+}
+
+header{
+background:green;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+font-size:36px;
+}
+
+nav{
+background:#006400;
+padding:10px;
+text-align:center;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+margin:15px;
+font-weight:bold;
+}
+
+.hero{
+background:white;
+padding:40px;
+text-align:center;
+}
+
+.hero h2{
+color:green;
+margin-bottom:15px;
+}
+
+.section{
+padding:30px;
+}
+
+.card{
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+}
+
+.gallery img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:10px;
+}
+
+.btn{
+display:inline-block;
+background:green;
+color:white;
+padding:10px 20px;
+text-decoration:none;
+border-radius:5px;
+margin-top:10px;
+}
+
+footer{
+background:#222;
+color:white;
+text-align:center;
+padding:20px;
+margin-top:20px;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h1>Welcome to Keezhakundalapaadi Village Portal</h1>
+<header>
+<h1>🏡 Keezhakundalapaadi Village Portal</h1>
+<p>Village News • Events • Videos • Announcements</p>
+</header>
 
-<a href="login.html">
-Admin Login
+<nav>
+<a href="#updates">Updates</a>
+<a href="#videos">Videos</a>
+<a href="#gallery">Gallery</a>
+<a href="#live">Live</a>
+<a href="login.html">Admin Login</a>
+</nav>
+
+<section class="hero">
+<h2>Welcome to Keezhakundalapaadi</h2>
+<p>Official Village Information Portal</p>
+
+<a class="btn" href="login.html">
+Admin Dashboard
 </a>
+</section>
+
+<section id="updates" class="section">
+
+<div class="card">
+<h2>📢 Latest Updates</h2>
+
+<ul>
+<li>Village Website Successfully Launched</li>
+<li>Upcoming Temple Festival Updates</li>
+<li>Village Development Announcements</li>
+</ul>
+
+</div>
+
+</section>
+
+<section id="videos" class="section">
+
+<div class="card">
+
+<h2>📹 Village Videos</h2>
+
+<p>Add YouTube Video Links from Admin Panel.</p>
+
+<iframe width="100%" height="400"
+src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+allowfullscreen>
+</iframe>
+
+</div>
+
+</section>
+
+<section id="gallery" class="section">
+
+<div class="card">
+
+<h2>📸 Village Gallery</h2>
+
+<div class="gallery">
+
+<img src="https://picsum.photos/600/400?1">
+
+<img src="https://picsum.photos/600/400?2">
+
+<img src="https://picsum.photos/600/400?3">
+
+</div>
+
+</div>
+
+</section>
+
+<section id="live" class="section">
+
+<div class="card">
+
+<h2>📺 Live Stream</h2>
+
+<p>Village Live Events will be streamed here.</p>
+
+<a class="btn"
+href="https://youtube.com"
+target="_blank">
+Watch Live </a>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="card">
+
+<h2>📞 Contact</h2>
+
+<p>
+Website Admin: Suresh
+</p>
+
+<p>
+Village Portal - Keezhakundalapaadi
+</p>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>
+© 2026 Keezhakundalapaadi Village Portal
+</p>
+
+<p>
+Managed by Super Admin Suresh
+</p>
+
+</footer>
 
 </body>
 </html>

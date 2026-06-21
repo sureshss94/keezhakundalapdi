@@ -682,6 +682,193 @@ async function loadLogs(){
     ).innerHTML = html;
 }
 
+
+async function uploadGallery(){
+
+    const title =
+    document.getElementById("galleryTitle").value;
+
+    const file =
+    document.getElementById("galleryFile").files[0];
+
+    if(!title || !file){
+        alert("Select image and enter title");
+        return;
+    }
+
+    const fileName =
+    Date.now() + "_" + file.name;
+
+    const upload =
+    await client.storage
+    .from("gallery")
+    .upload(fileName,file);
+
+    if(upload.error){
+        document.getElementById("galleryMsg").innerHTML =
+        "<span class='error'>Upload Failed</span>";
+        return;
+    }
+
+    const { data:urlData } =
+    client.storage
+    .from("gallery")
+    .getPublicUrl(fileName);
+
+    await client
+    .from("gallery")
+    .insert([{
+        title:title,
+        image_url:urlData.publicUrl,
+        status:"pending",
+        uploaded_by:"Suresh"
+    }]);
+
+    document.getElementById("galleryMsg").innerHTML =
+    "<span class='success'>Photo Uploaded</span>";
+
+    await addLog("Uploaded Gallery Photo: " + title);
+
+    loadDashboard();
+}
+
+async function loadPendingGallery(){
+
+    const { data } =
+    await client
+    .from("gallery")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
+
+    const div =
+    document.getElementById("pendingGallery");
+
+    if(!div){
+        return;
+    }
+
+    if(!data || data.length===0){
+        div.innerHTML = "No Pending Photos";
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(g=>{
+
+        html += `
+        <div class="card">
+            <h3>${g.title}</h3>
+            <img
+            src="${g.image_url}"
+            style="width:250px;border-radius:10px;">
+
+            <br><br>
+
+            <button
+            class="btn"
+            onclick="approveGallery('${g.id}')">
+            Approve
+            </button>
+
+            <button
+            class="delete"
+            onclick="deleteGallery('${g.id}')">
+            Delete
+            </button>
+        </div>
+        `;
+    });
+
+    div.innerHTML = html;
+}
+
+async function approveGallery(id){
+
+    await client
+    .from("gallery")
+    .update({
+        status:"approved",
+        approved_by:"Suresh"
+    })
+    .eq("id",id);
+
+    await addLog("Approved Gallery Photo");
+
+    loadDashboard();
+}
+
+async function deleteGallery(id){
+
+    await client
+    .from("gallery")
+    .delete()
+    .eq("id",id);
+
+    await addLog("Deleted Gallery Photo");
+
+    loadDashboard();
+}
+
+async function saveLive(){
+
+    const title =
+    document.getElementById("liveTitle").value;
+
+    const link =
+    document.getElementById("liveLink").value;
+
+    if(!title || !link){
+        alert("Enter all details");
+        return;
+    }
+
+    const { error } =
+    await client
+    .from("live_stream")
+    .insert([{
+        title:title,
+        youtube_link:link,
+        status:"active"
+    }]);
+
+    if(error){
+
+        document.getElementById("liveMsg").innerHTML =
+        "<span class='error'>Save Failed</span>";
+
+        return;
+    }
+
+    document.getElementById("liveMsg").innerHTML =
+    "<span class='success'>Live Stream Saved</span>";
+
+    await addLog(
+    "Created Live Stream: " + title
+    );
+}
+
+async function loadAnalytics(){
+
+    const likes =
+    await client
+    .from("likes")
+    .select("*",{count:"exact",head:true});
+
+    const comments =
+    await client
+    .from("comments")
+    .select("*",{count:"exact",head:true});
+
+    document.getElementById("totalLikes").innerHTML =
+    likes.count || 0;
+
+    document.getElementById("totalComments").innerHTML =
+    comments.count || 0;
+}
+
+
 async function loadDashboard(){
 
     await loadStats();
@@ -689,6 +876,8 @@ async function loadDashboard(){
     await loadPendingAnnouncements();
     await loadAdmins();
     await loadLogs();
+    await loadPendingGallery();
+    await loadAnalytics();
 }
 
 loadDashboard();

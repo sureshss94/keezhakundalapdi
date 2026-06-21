@@ -1,228 +1,437 @@
-<body>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<header style="background:green;color:white;padding:20px;text-align:center;">
-  <h1>🏡 Keezhakundalapaadi Village Portal</h1>
-  <p>Welcome to our village website</p>
-
-  <a href="login.html"
-     style="
-      display:inline-block;
-      margin-top:15px;
-      padding:10px 20px;
-      background:white;
-      color:green;
-      text-decoration:none;
-      border-radius:5px;
-      font-weight:bold;
-     ">
-    🔐 Admin Login
-  </a>
-</header>
-
-<main style="padding:20px;max-width:1200px;margin:auto;">
-
-  <!-- Latest Updates -->
-  <section style="margin-bottom:40px;">
-    <h2>📢 Latest Updates</h2>
-
-    <div id="announcementContainer">
-      Loading announcements...
-    </div>
-  </section>
-
-  <!-- Videos -->
-  <section style="margin-bottom:40px;">
-    <h2>📹 Village Videos</h2>
-
-    <div id="videoContainer">
-      Loading videos...
-    </div>
-  </section>
-
-  <!-- Gallery Placeholder -->
-  <section style="margin-bottom:40px;">
-    <h2>📸 Village Gallery</h2>
-    <p>Gallery upload feature coming soon.</p>
-  </section>
-
-  <!-- Live Stream Placeholder -->
-  <section style="margin-bottom:40px;">
-    <h2>📡 Live Stream</h2>
-    <p>Live streaming feature coming soon.</p>
-  </section>
-
-  <!-- Contact -->
-  <section style="margin-bottom:40px;">
-    <h2>📞 Contact</h2>
-    <p>Website Admin: Suresh (Super Admin)</p>
-  </section>
-
-</main>
-
-<footer style="background:#222;color:white;padding:20px;text-align:center;">
-  © 2026 Keezhakundalapaadi Village Portal
-</footer>
+<title>Keezhakundalapaadi Village Portal</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<style>
+
+body{
+    font-family:Arial;
+    margin:0;
+    background:#f4f4f4;
+}
+
+header{
+    background:green;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin-top:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.video-card{
+    margin-bottom:40px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    color:white;
+    background:green;
+}
+
+.comment-box{
+    border:1px solid #ddd;
+    padding:10px;
+    margin-top:10px;
+    border-radius:5px;
+}
+
+iframe{
+    width:100%;
+    height:450px;
+}
+
+@media(max-width:768px){
+
+    iframe{
+        height:250px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🏡 Keezhakundalapaadi Village Portal</h1>
+
+<p>Welcome to our village website</p>
+
+<a href="login.html">
+<button>
+🔐 Admin Login
+</button>
+</a>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>📢 Latest Updates</h2>
+
+<div id="announcementContainer">
+Loading announcements...
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📹 Village Videos</h2>
+
+<div id="videoContainer">
+Loading videos...
+</div>
+
+</div>
+
+</div>
+
 <script>
-const client = supabase.createClient(
-  "https://uulptnmglchzvdsausrh.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
+
+const client =
+supabase.createClient(
+"https://uulptnmglchzvdsausrh.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
 );
 
-/* ==========================
-   LOAD ANNOUNCEMENTS
-========================== */
+async function loadAnnouncements(){
 
-async function loadAnnouncements() {
+    const { data, error } =
+    await client
+        .from("announcements")
+        .select("*")
+        .eq("status","approved")
+        .order("created_at",{
+            ascending:false
+        });
 
-  const { data, error } = await client
-    .from("announcements")
-    .select("*")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false });
+    if(error){
 
-  if (error) {
-    console.log(error);
+        document.getElementById(
+            "announcementContainer"
+        ).innerHTML =
+        "Failed to load.";
+
+        return;
+    }
+
+    if(data.length===0){
+
+        document.getElementById(
+            "announcementContainer"
+        ).innerHTML =
+        "No announcements.";
+
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(a=>{
+
+        html += `
+        <div class="comment-box">
+
+            <h3>${a.title}</h3>
+
+            <p>
+                ${a.description || ""}
+            </p>
+
+            <small>
+                ${new Date(
+                    a.created_at
+                ).toLocaleString()}
+            </small>
+
+        </div>
+        `;
+    });
 
     document.getElementById(
-      "announcementContainer"
+        "announcementContainer"
     ).innerHTML =
-      "<p>Unable to load announcements.</p>";
-
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    document.getElementById(
-      "announcementContainer"
-    ).innerHTML =
-      "<p>No announcements available.</p>";
-
-    return;
-  }
-
-  let html = "";
-
-  data.forEach(item => {
-    html += `
-      <div
-        style="
-          background:white;
-          padding:20px;
-          margin-bottom:20px;
-          border-radius:10px;
-          box-shadow:0 0 10px rgba(0,0,0,0.1);
-        "
-      >
-        <h3>${item.title}</h3>
-
-        <p>${item.description}</p>
-
-        <small>
-          ${new Date(item.created_at).toLocaleString()}
-        </small>
-      </div>
-    `;
-  });
-
-  document.getElementById(
-    "announcementContainer"
-  ).innerHTML = html;
+    html;
 }
 
-/* ==========================
-   LOAD VIDEOS
-========================== */
+async function loadVideos(){
 
-async function loadVideos() {
+    const { data, error } =
+    await client
+        .from("videos")
+        .select("*")
+        .eq("status","approved")
+        .order("created_at",{
+            ascending:false
+        });
 
-  const { data, error } = await client
-    .from("videos")
-    .select("*")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false });
+    if(error){
 
-  if (error) {
-    console.log(error);
+        document.getElementById(
+            "videoContainer"
+        ).innerHTML =
+        "Failed to load videos.";
+
+        return;
+    }
+
+    if(data.length===0){
+
+        document.getElementById(
+            "videoContainer"
+        ).innerHTML =
+        "No videos uploaded.";
+
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(video=>{
+
+        let youtubeId = "";
+
+        if(video.youtube_link){
+
+            youtubeId =
+            video.youtube_link
+            .split("v=")[1];
+
+            if(youtubeId &&
+               youtubeId.includes("&")){
+
+                youtubeId =
+                youtubeId.split("&")[0];
+            }
+        }
+
+        html += `
+
+        <div class="video-card">
+
+            <h3>${video.title}</h3>
+
+            <iframe
+            src="https://www.youtube.com/embed/${youtubeId}"
+            frameborder="0"
+            allowfullscreen>
+            </iframe>
+
+            <br><br>
+
+            <button
+            onclick="likeVideo('${video.id}')">
+            ❤️ Like
+            </button>
+
+            <span
+            id="likeCount-${video.id}">
+            0 Likes
+            </span>
+
+            <br><br>
+
+            <button
+            onclick="addComment('${video.id}')">
+            💬 Add Comment
+            </button>
+
+            <div
+            id="comments-${video.id}">
+            Loading comments...
+            </div>
+
+        </div>
+
+        `;
+    });
 
     document.getElementById(
-      "videoContainer"
+        "videoContainer"
     ).innerHTML =
-      "<p>Unable to load videos.</p>";
+    html;
 
-    return;
-  }
+    data.forEach(video=>{
 
-  if (!data || data.length === 0) {
-    document.getElementById(
-      "videoContainer"
-    ).innerHTML =
-      "<p>No videos available.</p>";
+        loadLikeCount(video.id);
+        loadComments(video.id);
 
-    return;
-  }
-
-  let html = "";
-
-  data.forEach(video => {
-
-    let youtubeId = "";
-
-    if (
-      video.youtube_link &&
-      video.youtube_link.includes("watch?v=")
-    ) {
-      youtubeId = video.youtube_link
-        .split("v=")[1]
-        .split("&")[0];
-    }
-    else if (
-      video.youtube_link &&
-      video.youtube_link.includes("youtu.be/")
-    ) {
-      youtubeId = video.youtube_link
-        .split("youtu.be/")[1]
-        .split("?")[0];
-    }
-
-    if (!youtubeId) {
-      return;
-    }
-
-    html += `
-      <div
-        style="
-          background:white;
-          padding:20px;
-          margin-bottom:25px;
-          border-radius:10px;
-          box-shadow:0 0 10px rgba(0,0,0,0.1);
-        "
-      >
-        <h3>${video.title}</h3>
-
-        <iframe
-          width="100%"
-          height="400"
-          src="https://www.youtube.com/embed/${youtubeId}"
-          frameborder="0"
-          allowfullscreen
-        >
-        </iframe>
-      </div>
-    `;
-  });
-
-  document.getElementById(
-    "videoContainer"
-  ).innerHTML = html;
+    });
 }
 
-/* ==========================
-   START
-========================== */
+async function likeVideo(videoId){
+
+    const name =
+    prompt("Enter your name");
+
+    if(!name) return;
+
+    const { error } =
+    await client
+        .from("likes")
+        .insert([{
+            video_id:videoId,
+            user_name:name
+        }]);
+
+    if(error){
+
+        alert("Like failed.");
+
+        return;
+    }
+
+    alert("❤️ Thank you!");
+
+    loadLikeCount(videoId);
+}
+
+async function loadLikeCount(videoId){
+
+    const { count } =
+    await client
+        .from("likes")
+        .select("*",{
+            count:"exact",
+            head:true
+        })
+        .eq(
+            "video_id",
+            videoId
+        );
+
+    document.getElementById(
+        `likeCount-${videoId}`
+    ).innerHTML =
+    `${count || 0} Likes`;
+}
+
+async function addComment(videoId){
+
+    const name =
+    prompt("Your name");
+
+    if(!name) return;
+
+    const comment =
+    prompt("Comment");
+
+    if(!comment) return;
+
+    const { error } =
+    await client
+        .from("comments")
+        .insert([{
+            video_id:videoId,
+            user_name:name,
+            comment:comment
+        }]);
+
+    if(error){
+
+        alert(
+        "Comment failed."
+        );
+
+        return;
+    }
+
+    alert(
+    "💬 Comment Added"
+    );
+
+    loadComments(videoId);
+}
+
+async function loadComments(videoId){
+
+    const { data } =
+    await client
+        .from("comments")
+        .select("*")
+        .eq(
+            "video_id",
+            videoId
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+    let html = "";
+
+    if(!data ||
+       data.length===0){
+
+        html =
+        "No comments yet.";
+
+    }
+    else{
+
+        data.forEach(c=>{
+
+            html += `
+
+            <div class="comment-box">
+
+                <b>
+                ${c.user_name}
+                </b>
+
+                <br>
+
+                ${c.comment}
+
+                <br>
+
+                <small>
+                ${new Date(
+                    c.created_at
+                ).toLocaleString()}
+                </small>
+
+            </div>
+
+            `;
+        });
+    }
+
+    document.getElementById(
+        `comments-${videoId}`
+    ).innerHTML =
+    html;
+}
 
 loadAnnouncements();
 loadVideos();
@@ -230,3 +439,4 @@ loadVideos();
 </script>
 
 </body>
+</html>

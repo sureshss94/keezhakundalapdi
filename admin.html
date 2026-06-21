@@ -6,7 +6,7 @@
 
 <title>Keezhakundalapaadi Admin Panel</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
 <style>
 body{
@@ -76,21 +76,10 @@ button{
     margin-right:5px;
 }
 
-.btn{
-    background:green;
-}
-
-.reject{
-    background:orange;
-}
-
-.delete{
-    background:red;
-}
-
-.logout{
-    background:red;
-}
+.btn{ background:green; }
+.reject{ background:orange; }
+.delete{ background:red; }
+.logout{ background:red; }
 
 table{
     width:100%;
@@ -107,13 +96,8 @@ table th{
     background:#eee;
 }
 
-.success{
-    color:green;
-}
-
-.error{
-    color:red;
-}
+.success{ color:green; }
+.error{ color:red; }
 
 @media(max-width:768px){
     table{
@@ -136,142 +120,74 @@ table th{
 <div class="card">
 <h2>👑 Super Admin</h2>
 <p><b>Suresh</b></p>
-<button class="logout" onclick="logout()">
-Logout
-</button>
+<button class="logout" onclick="logout()">Logout</button>
 </div>
 
+<!-- DASHBOARD -->
 <div class="card">
-
 <h2>📊 Dashboard Statistics</h2>
 
 <div class="stats">
-
-<div class="stat-box">
-<h3 id="videoCount">0</h3>
-<p>Videos</p>
-</div>
-
-<div class="stat-box">
-<h3 id="announcementCount">0</h3>
-<p>Announcements</p>
-</div>
-
-<div class="stat-box">
-<h3 id="galleryCount">0</h3>
-<p>Photos</p>
-</div>
-
-<div class="stat-box">
-<h3 id="adminCount">0</h3>
-<p>Admins</p>
-</div>
-
-<div class="stat-box">
-<h3 id="pendingCount">0</h3>
-<p>Pending</p>
+<div class="stat-box"><h3 id="videoCount">0</h3><p>Videos</p></div>
+<div class="stat-box"><h3 id="announcementCount">0</h3><p>Announcements</p></div>
+<div class="stat-box"><h3 id="galleryCount">0</h3><p>Photos</p></div>
+<div class="stat-box"><h3 id="adminCount">0</h3><p>Admins</p></div>
+<div class="stat-box"><h3 id="pendingCount">0</h3><p>Pending</p></div>
 </div>
 
 </div>
 
-</div>
-
+<!-- VIDEO UPLOAD -->
 <div class="card">
-
 <h2>📹 Upload Village Video</h2>
 
-<input
-id="videoTitle"
-placeholder="Video Title">
+<input id="videoTitle" placeholder="Video Title">
+<input id="videoUrl" placeholder="YouTube Link">
 
-<input
-id="videoUrl"
-placeholder="YouTube Link">
-
-<button
-class="btn"
-onclick="uploadVideo()">
-Upload
-</button>
-
+<button class="btn" onclick="uploadVideo()">Upload</button>
 <p id="videoMsg"></p>
-
 </div>
 
+<!-- ANNOUNCEMENT -->
 <div class="card">
-
 <h2>📢 Add Announcement</h2>
 
-<input
-id="announcementTitle"
-placeholder="Announcement Title">
+<input id="announcementTitle" placeholder="Announcement Title">
+<textarea id="announcementText" placeholder="Announcement Details"></textarea>
 
-<textarea
-id="announcementText"
-placeholder="Announcement Details">
-</textarea>
-
-<button
-class="btn"
-onclick="publishAnnouncement()">
-Save Announcement
-</button>
-
+<button class="btn" onclick="publishAnnouncement()">Save Announcement</button>
 <p id="announcementMsg"></p>
-
 </div>
 
+<!-- PENDING -->
 <div class="card">
-
 <h2>📹 Pending Videos</h2>
-
-<div id="pendingVideos">
-Loading...
-</div>
-
+<div id="pendingVideos">Loading...</div>
 </div>
 
 <div class="card">
-
 <h2>📢 Pending Announcements</h2>
-
-<div id="pendingAnnouncements">
-Loading...
-</div>
-
+<div id="pendingAnnouncements">Loading...</div>
 </div>
 
 <div class="card">
-
 <h2>👥 Admin Management</h2>
-
-<div id="adminList">
-Loading...
-</div>
-
+<div id="adminList">Loading...</div>
 </div>
 
 <div class="card">
-
 <h2>📋 Audit Logs</h2>
-
-<div id="auditLogs">
-Loading...
+<div id="auditLogs">Loading...</div>
 </div>
 
-</div>
-
-
+<!-- GALLERY -->
 <div class="card">
 <h2>📸 Upload Gallery Photo</h2>
 
 <input id="galleryTitle" placeholder="Photo Title">
 <input id="galleryFile" type="file" accept="image/*">
 
-<button class="btn" onclick="uploadGallery()">
-Upload Photo
-</button>
-
+<button class="btn" onclick="uploadGallery()">Upload Photo</button>
 <p id="galleryMsg"></p>
 </div>
 
@@ -280,429 +196,140 @@ Upload Photo
 <div id="pendingGallery">Loading...</div>
 </div>
 
+<!-- LIVE -->
 <div class="card">
 <h2>📡 Live Stream Management</h2>
 
 <input id="liveTitle" placeholder="Live Title">
 <input id="liveLink" placeholder="YouTube Live Link">
 
-<button class="btn" onclick="saveLive()">
-Save Live Stream
-</button>
-
+<button class="btn" onclick="saveLive()">Save Live Stream</button>
 <p id="liveMsg"></p>
 </div>
 
+<!-- ANALYTICS -->
 <div class="card">
 <h2>📊 Engagement Analytics</h2>
-
 <p>❤️ Total Likes: <span id="totalLikes">0</span></p>
 <p>💬 Total Comments: <span id="totalComments">0</span></p>
 </div>
 
-
 </div>
 
 <script>
+const SUPABASE_URL = "https://uulptnmglchzvdsausrh.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces";
 
-const client = supabase.createClient(
-"https://uulptnmglchzvdsausrh.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
-);
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function logout(){
-    localStorage.clear();
-    window.location.href="login.html";
+/* 🔐 AUTH CHECK */
+async function checkAuth(){
+    const { data: { session } } = await client.auth.getSession();
+
+    if(!session){
+        alert("Please login first");
+        window.location.href = "login.html";
+    }
+}
+checkAuth();
+
+/* LOGOUT */
+async function logout(){
+    await client.auth.signOut();
+    window.location.href = "login.html";
 }
 
+/* VIDEO */
 async function uploadVideo(){
+    let title = document.getElementById("videoTitle").value;
+    let url = document.getElementById("videoUrl").value;
 
-    let title =
-    document.getElementById("videoTitle").value;
-
-    let url =
-    document.getElementById("videoUrl").value;
-
-    if(!title || !url){
-        alert("Fill all fields");
-        return;
-    }
-
-    const { error } =
-    await client
-    .from("videos")
-    .insert([{
-        title:title,
-        youtube_link:url,
-        status:"pending",
-        uploaded_by:"Suresh"
+    const { error } = await client.from("videos").insert([{
+        title,
+        youtube_link: url,
+        status: "pending",
+        uploaded_by: "Suresh"
     }]);
 
-    if(error){
-        document.getElementById("videoMsg")
-        .innerHTML =
-        "<span class='error'>Upload Failed</span>";
-    }
-    else{
+    document.getElementById("videoMsg").innerHTML =
+        error ? "<span class='error'>Upload Failed</span>"
+              : "<span class='success'>Video Submitted</span>";
 
-        await addLog(
-        "Uploaded Video: " + title
-        );
-
-        document.getElementById("videoMsg")
-        .innerHTML =
-        "<span class='success'>Video Submitted For Approval</span>";
-
-        loadDashboard();
-    }
+    loadDashboard();
 }
 
+/* ANNOUNCEMENT */
 async function publishAnnouncement(){
+    let title = document.getElementById("announcementTitle").value;
+    let details = document.getElementById("announcementText").value;
 
-    let title =
-    document.getElementById("announcementTitle").value;
-
-    let details =
-    document.getElementById("announcementText").value;
-
-    if(!title){
-        alert("Enter title");
-        return;
-    }
-
-    const { error } =
-    await client
-    .from("announcements")
-    .insert([{
-        title:title,
-        description:details,
-        status:"pending"
+    const { error } = await client.from("announcements").insert([{
+        title,
+        description: details,
+        status: "pending"
     }]);
 
-    if(error){
-        document.getElementById("announcementMsg")
-        .innerHTML =
-        "<span class='error'>Save Failed</span>";
-    }
-    else{
+    document.getElementById("announcementMsg").innerHTML =
+        error ? "<span class='error'>Save Failed</span>"
+              : "<span class='success'>Submitted</span>";
 
-        await addLog(
-        "Created Announcement: " + title
-        );
-
-        document.getElementById("announcementMsg")
-        .innerHTML =
-        "<span class='success'>Announcement Submitted For Approval</span>";
-
-        loadDashboard();
-    }
+    loadDashboard();
 }
 
+/* STATS */
 async function loadStats(){
+    const videos = await client.from("videos").select("*",{count:"exact",head:true});
+    const announcements = await client.from("announcements").select("*",{count:"exact",head:true});
+    const gallery = await client.from("gallery").select("*",{count:"exact",head:true});
+    const admins = await client.from("admin_users").select("*",{count:"exact",head:true});
 
-    const videos =
-    await client.from("videos").select("*",{count:"exact",head:true});
+    const pv = await client.from("videos").select("*",{count:"exact",head:true}).eq("status","pending");
+    const pa = await client.from("announcements").select("*",{count:"exact",head:true}).eq("status","pending");
 
-    const announcements =
-    await client.from("announcements").select("*",{count:"exact",head:true});
-
-    const gallery =
-    await client.from("gallery").select("*",{count:"exact",head:true});
-
-    const admins =
-    await client.from("admin_users").select("*",{count:"exact",head:true});
-
-    const pv =
-    await client.from("videos").select("*",{count:"exact",head:true})
-    .eq("status","pending");
-
-    const pa =
-    await client.from("announcements").select("*",{count:"exact",head:true})
-    .eq("status","pending");
-
-    document.getElementById("videoCount")
-    .innerHTML = videos.count || 0;
-
-    document.getElementById("announcementCount")
-    .innerHTML = announcements.count || 0;
-
-    document.getElementById("galleryCount")
-    .innerHTML = gallery.count || 0;
-
-    document.getElementById("adminCount")
-    .innerHTML = admins.count || 0;
-
-    document.getElementById("pendingCount")
-    .innerHTML =
-    (pv.count || 0) +
-    (pa.count || 0);
+    document.getElementById("videoCount").innerText = videos.count || 0;
+    document.getElementById("announcementCount").innerText = announcements.count || 0;
+    document.getElementById("galleryCount").innerText = gallery.count || 0;
+    document.getElementById("adminCount").innerText = admins.count || 0;
+    document.getElementById("pendingCount").innerText = (pv.count || 0) + (pa.count || 0);
 }
 
+/* PENDING VIDEOS */
 async function loadPendingVideos(){
-
-    const { data } =
-    await client
-    .from("videos")
-    .select("*")
-    .eq("status","pending")
-    .order("created_at",{ascending:false});
-
-    if(!data || data.length===0){
-        document.getElementById(
-        "pendingVideos"
-        ).innerHTML =
-        "No Pending Videos";
-        return;
-    }
+    const { data } = await client.from("videos").select("*").eq("status","pending");
 
     let html = "";
-
     data.forEach(v=>{
-
         html += `
         <div class="card">
-        <b>${v.title}</b><br>
-        ${v.uploaded_by || "Unknown"}<br><br>
+            <b>${v.title}</b><br>
+            ${v.uploaded_by || "Unknown"}<br><br>
 
-        <button class="btn"
-        onclick="approveVideo('${v.id}')">
-        Approve
-        </button>
-
-        <button class="reject"
-        onclick="rejectVideo('${v.id}')">
-        Reject
-        </button>
-
-        <button class="delete"
-        onclick="deleteVideo('${v.id}')">
-        Delete
-        </button>
-        </div>
-        `;
+            <button class="btn" onclick="approveVideo('${v.id}')">Approve</button>
+            <button class="reject" onclick="rejectVideo('${v.id}')">Reject</button>
+        </div>`;
     });
 
-    document.getElementById(
-    "pendingVideos"
-    ).innerHTML = html;
+    document.getElementById("pendingVideos").innerHTML = html || "No Pending Videos";
 }
 
 async function approveVideo(id){
-
-    await client
-    .from("videos")
-    .update({
-        status:"approved",
-        approved_by:"Suresh"
-    })
-    .eq("id",id);
-
-    await addLog(
-    "Approved Video"
-    );
-
+    await client.from("videos").update({status:"approved"}).eq("id",id);
     loadDashboard();
 }
 
 async function rejectVideo(id){
-
-    await client
-    .from("videos")
-    .update({
-        status:"rejected"
-    })
-    .eq("id",id);
-
-    await addLog(
-    "Rejected Video"
-    );
-
+    await client.from("videos").update({status:"rejected"}).eq("id",id);
     loadDashboard();
 }
 
-async function deleteVideo(id){
-
-    await client
-    .from("videos")
-    .delete()
-    .eq("id",id);
-
-    await addLog(
-    "Deleted Video"
-    );
-
-    loadDashboard();
-}
-
-async function loadPendingAnnouncements(){
-
-    const { data } =
-    await client
-    .from("announcements")
-    .select("*")
-    .eq("status","pending")
-    .order("created_at",
-    {ascending:false});
-
-    if(!data || data.length===0){
-
-        document.getElementById(
-        "pendingAnnouncements"
-        ).innerHTML =
-        "No Pending Announcements";
-
-        return;
-    }
-
-    let html = "";
-
-    data.forEach(a=>{
-
-        html += `
-        <div class="card">
-        <b>${a.title}</b>
-        <p>${a.description || ""}</p>
-
-        <button class="btn"
-        onclick="approveAnnouncement('${a.id}')">
-        Approve
-        </button>
-
-        <button class="reject"
-        onclick="rejectAnnouncement('${a.id}')">
-        Reject
-        </button>
-        </div>
-        `;
-    });
-
-    document.getElementById(
-    "pendingAnnouncements"
-    ).innerHTML = html;
-}
-
-async function approveAnnouncement(id){
-
-    await client
-    .from("announcements")
-    .update({
-        status:"approved"
-    })
-    .eq("id",id);
-
-    await addLog(
-    "Approved Announcement"
-    );
-
-    loadDashboard();
-}
-
-async function rejectAnnouncement(id){
-
-    await client
-    .from("announcements")
-    .update({
-        status:"rejected"
-    })
-    .eq("id",id);
-
-    await addLog(
-    "Rejected Announcement"
-    );
-
-    loadDashboard();
-}
-
-async function loadAdmins(){
-
-    const { data } =
-    await client
-    .from("admin_users")
-    .select("*");
-
-    let html =
-    "<table><tr><th>Name</th><th>Email</th><th>Role</th></tr>";
-
-    data.forEach(a=>{
-
-        html += `
-        <tr>
-        <td>${a.name}</td>
-        <td>${a.email}</td>
-        <td>${a.role}</td>
-        </tr>
-        `;
-    });
-
-    html += "</table>";
-
-    document.getElementById(
-    "adminList"
-    ).innerHTML = html;
-}
-
-async function addLog(action){
-
-    await client
-    .from("audit_logs")
-    .insert([{
-        action:action,
-        performed_by:"Suresh"
-    }]);
-}
-
-async function loadLogs(){
-
-    const { data } =
-    await client
-    .from("audit_logs")
-    .select("*")
-    .order("created_at",
-    {ascending:false})
-    .limit(20);
-
-    let html = "";
-
-    data.forEach(l=>{
-
-        html += `
-        <p>
-        ${new Date(l.created_at)
-        .toLocaleString()}
-        -
-        ${l.action}
-        -
-        ${l.performed_by}
-        </p>
-        `;
-    });
-
-    document.getElementById(
-    "auditLogs"
-    ).innerHTML = html;
-}
-
-
+/* GALLERY */
 async function uploadGallery(){
+    const title = document.getElementById("galleryTitle").value;
+    const file = document.getElementById("galleryFile").files[0];
 
-    const title =
-    document.getElementById("galleryTitle").value;
+    const fileName = Date.now() + "_" + file.name;
 
-    const file =
-    document.getElementById("galleryFile").files[0];
-
-    if(!title || !file){
-        alert("Select image and enter title");
-        return;
-    }
-
-    const fileName =
-    Date.now() + "_" + file.name;
-
-    const upload =
-    await client.storage
-    .from("gallery")
-    .upload(fileName,file);
+    const upload = await client.storage.from("gallery").upload(fileName,file);
 
     if(upload.error){
         document.getElementById("galleryMsg").innerHTML =
@@ -710,178 +337,38 @@ async function uploadGallery(){
         return;
     }
 
-    const { data:urlData } =
-    client.storage
-    .from("gallery")
-    .getPublicUrl(fileName);
+    const { data } = client.storage.from("gallery").getPublicUrl(fileName);
 
-    await client
-    .from("gallery")
-    .insert([{
-        title:title,
-        image_url:urlData.publicUrl,
-        status:"pending",
-        uploaded_by:"Suresh"
+    await client.from("gallery").insert([{
+        title,
+        image_url: data.publicUrl,
+        status: "pending",
+        uploaded_by: "Suresh"
     }]);
 
     document.getElementById("galleryMsg").innerHTML =
-    "<span class='success'>Photo Uploaded</span>";
-
-    await addLog("Uploaded Gallery Photo: " + title);
+        "<span class='success'>Uploaded</span>";
 
     loadDashboard();
 }
 
-async function loadPendingGallery(){
-
-    const { data } =
-    await client
-    .from("gallery")
-    .select("*")
-    .eq("status","pending")
-    .order("created_at",{ascending:false});
-
-    const div =
-    document.getElementById("pendingGallery");
-
-    if(!div){
-        return;
-    }
-
-    if(!data || data.length===0){
-        div.innerHTML = "No Pending Photos";
-        return;
-    }
-
-    let html = "";
-
-    data.forEach(g=>{
-
-        html += `
-        <div class="card">
-            <h3>${g.title}</h3>
-            <img
-            src="${g.image_url}"
-            style="width:250px;border-radius:10px;">
-
-            <br><br>
-
-            <button
-            class="btn"
-            onclick="approveGallery('${g.id}')">
-            Approve
-            </button>
-
-            <button
-            class="delete"
-            onclick="deleteGallery('${g.id}')">
-            Delete
-            </button>
-        </div>
-        `;
-    });
-
-    div.innerHTML = html;
-}
-
-async function approveGallery(id){
-
-    await client
-    .from("gallery")
-    .update({
-        status:"approved",
-        approved_by:"Suresh"
-    })
-    .eq("id",id);
-
-    await addLog("Approved Gallery Photo");
-
-    loadDashboard();
-}
-
-async function deleteGallery(id){
-
-    await client
-    .from("gallery")
-    .delete()
-    .eq("id",id);
-
-    await addLog("Deleted Gallery Photo");
-
-    loadDashboard();
-}
-
-async function saveLive(){
-
-    const title =
-    document.getElementById("liveTitle").value;
-
-    const link =
-    document.getElementById("liveLink").value;
-
-    if(!title || !link){
-        alert("Enter all details");
-        return;
-    }
-
-    const { error } =
-    await client
-    .from("live_stream")
-    .insert([{
-        title:title,
-        youtube_link:link,
-        status:"active"
-    }]);
-
-    if(error){
-
-        document.getElementById("liveMsg").innerHTML =
-        "<span class='error'>Save Failed</span>";
-
-        return;
-    }
-
-    document.getElementById("liveMsg").innerHTML =
-    "<span class='success'>Live Stream Saved</span>";
-
-    await addLog(
-    "Created Live Stream: " + title
-    );
-}
-
+/* ANALYTICS */
 async function loadAnalytics(){
+    const likes = await client.from("likes").select("*",{count:"exact",head:true});
+    const comments = await client.from("comments").select("*",{count:"exact",head:true});
 
-    const likes =
-    await client
-    .from("likes")
-    .select("*",{count:"exact",head:true});
-
-    const comments =
-    await client
-    .from("comments")
-    .select("*",{count:"exact",head:true});
-
-    document.getElementById("totalLikes").innerHTML =
-    likes.count || 0;
-
-    document.getElementById("totalComments").innerHTML =
-    comments.count || 0;
+    document.getElementById("totalLikes").innerText = likes.count || 0;
+    document.getElementById("totalComments").innerText = comments.count || 0;
 }
 
-
+/* DASHBOARD */
 async function loadDashboard(){
-
     await loadStats();
     await loadPendingVideos();
-    await loadPendingAnnouncements();
-    await loadAdmins();
-    await loadLogs();
-    await loadPendingGallery();
     await loadAnalytics();
 }
 
 loadDashboard();
-
 </script>
 
 </body>

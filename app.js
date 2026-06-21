@@ -1,6 +1,10 @@
-console.log("Keezhakundalapaadi Village Portal Loaded");
+console.log("Keezhakundalapaadi Portal Loaded");
 
-function logout(){
-    alert("Logged Out");
-    window.location.href="login.html";
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+function showMessage(msg){
+  alert(msg);
 }

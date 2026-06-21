@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,10 +9,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     background:#f4f4f4;
 }
 
@@ -23,34 +21,45 @@ body{
     padding:20px;
     font-size:28px;
     font-weight:bold;
+    text-align:center;
 }
 
 .container{
     padding:20px;
+    max-width:1200px;
+    margin:auto;
 }
 
 .card{
     background:white;
-    border-radius:10px;
     padding:20px;
+    border-radius:10px;
     margin-bottom:20px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-button{
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:15px;
+}
+
+.stat-box{
     background:green;
     color:white;
-    border:none;
-    padding:10px 15px;
-    border-radius:5px;
-    cursor:pointer;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
 }
 
-button:hover{
-    opacity:0.9;
+.stat-box h3{
+    margin:0;
+    font-size:30px;
 }
 
-input, textarea{
+input,
+textarea,
+select{
     width:100%;
     padding:10px;
     margin-top:10px;
@@ -58,20 +67,60 @@ input, textarea{
     box-sizing:border-box;
 }
 
+button{
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+    color:white;
+    margin-right:5px;
+}
+
+.btn{
+    background:green;
+}
+
+.reject{
+    background:orange;
+}
+
+.delete{
+    background:red;
+}
+
 .logout{
     background:red;
 }
 
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th,
+table td{
+    border:1px solid #ddd;
+    padding:10px;
+}
+
+table th{
+    background:#eee;
+}
+
 .success{
     color:green;
-    font-weight:bold;
 }
 
 .error{
     color:red;
-    font-weight:bold;
 }
 
+@media(max-width:768px){
+    table{
+        display:block;
+        overflow-x:auto;
+    }
+}
 </style>
 
 </head>
@@ -79,7 +128,7 @@ input, textarea{
 <body>
 
 <div class="header">
-🏡 Keezhakundalapaadi Village Admin Panel
+🏡 Keezhakundalapaadi Village Super Admin Dashboard
 </div>
 
 <div class="container">
@@ -87,24 +136,62 @@ input, textarea{
 <div class="card">
 <h2>👑 Super Admin</h2>
 <p><b>Suresh</b></p>
-<button class="logout" onclick="logout()">Logout</button>
+<button class="logout" onclick="logout()">
+Logout
+</button>
 </div>
 
 <div class="card">
+
+<h2>📊 Dashboard Statistics</h2>
+
+<div class="stats">
+
+<div class="stat-box">
+<h3 id="videoCount">0</h3>
+<p>Videos</p>
+</div>
+
+<div class="stat-box">
+<h3 id="announcementCount">0</h3>
+<p>Announcements</p>
+</div>
+
+<div class="stat-box">
+<h3 id="galleryCount">0</h3>
+<p>Photos</p>
+</div>
+
+<div class="stat-box">
+<h3 id="adminCount">0</h3>
+<p>Admins</p>
+</div>
+
+<div class="stat-box">
+<h3 id="pendingCount">0</h3>
+<p>Pending</p>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
 <h2>📹 Upload Village Video</h2>
 
 <input
-type="text"
 id="videoTitle"
 placeholder="Video Title">
 
 <input
-type="text"
 id="videoUrl"
-placeholder="YouTube Video URL">
+placeholder="YouTube Link">
 
-<button onclick="uploadVideo()">
-Upload Video
+<button
+class="btn"
+onclick="uploadVideo()">
+Upload
 </button>
 
 <p id="videoMsg"></p>
@@ -116,7 +203,6 @@ Upload Video
 <h2>📢 Add Announcement</h2>
 
 <input
-type="text"
 id="announcementTitle"
 placeholder="Announcement Title">
 
@@ -125,8 +211,10 @@ id="announcementText"
 placeholder="Announcement Details">
 </textarea>
 
-<button onclick="publishAnnouncement()">
-Publish Announcement
+<button
+class="btn"
+onclick="publishAnnouncement()">
+Save Announcement
 </button>
 
 <p id="announcementMsg"></p>
@@ -135,11 +223,21 @@ Publish Announcement
 
 <div class="card">
 
-<h2>📋 Pending Approvals</h2>
+<h2>📹 Pending Videos</h2>
 
-<p>
-Future videos and announcements will appear here.
-</p>
+<div id="pendingVideos">
+Loading...
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>📢 Pending Announcements</h2>
+
+<div id="pendingAnnouncements">
+Loading...
+</div>
 
 </div>
 
@@ -147,22 +245,19 @@ Future videos and announcements will appear here.
 
 <h2>👥 Admin Management</h2>
 
-<ul>
-<li>Add Admin</li>
-<li>Remove Admin</li>
-<li>Assign Roles</li>
-<li>Manage Permissions</li>
-</ul>
+<div id="adminList">
+Loading...
+</div>
 
 </div>
 
 <div class="card">
 
-<h2>📊 Village Statistics</h2>
+<h2>📋 Audit Logs</h2>
 
-<p>Total Videos: Managed in Supabase</p>
-<p>Total Announcements: Managed in Supabase</p>
-<p>Total Admins: 1</p>
+<div id="auditLogs">
+Loading...
+</div>
 
 </div>
 
@@ -176,10 +271,8 @@ const client = supabase.createClient(
 );
 
 function logout(){
-
-    alert("Logged Out Successfully");
-
-    window.location.href = "login.html";
+    localStorage.clear();
+    window.location.href="login.html";
 }
 
 async function uploadVideo(){
@@ -190,40 +283,37 @@ async function uploadVideo(){
     let url =
     document.getElementById("videoUrl").value;
 
-    if(title === "" || url === ""){
-
-        alert("Please fill all fields");
+    if(!title || !url){
+        alert("Fill all fields");
         return;
     }
 
     const { error } =
     await client
     .from("videos")
-    .insert([
-        {
-            title:title,
-            youtube_link:url,
-            status:"approved",
-            uploaded_by:"Suresh"
-        }
-    ]);
+    .insert([{
+        title:title,
+        youtube_link:url,
+        status:"pending",
+        uploaded_by:"Suresh"
+    }]);
 
     if(error){
+        document.getElementById("videoMsg")
+        .innerHTML =
+        "<span class='error'>Upload Failed</span>";
+    }
+    else{
 
-        console.log(error);
+        await addLog(
+        "Uploaded Video: " + title
+        );
 
         document.getElementById("videoMsg")
         .innerHTML =
-        "<span class='error'>❌ Upload Failed</span>";
+        "<span class='success'>Video Submitted For Approval</span>";
 
-    }else{
-
-        document.getElementById("videoMsg")
-        .innerHTML =
-        "<span class='success'>✅ Video Uploaded Successfully</span>";
-
-        document.getElementById("videoTitle").value = "";
-        document.getElementById("videoUrl").value = "";
+        loadDashboard();
     }
 }
 
@@ -235,41 +325,333 @@ async function publishAnnouncement(){
     let details =
     document.getElementById("announcementText").value;
 
-    if(title === ""){
-
-        alert("Enter Announcement Title");
+    if(!title){
+        alert("Enter title");
         return;
     }
 
     const { error } =
     await client
     .from("announcements")
-    .insert([
-        {
-            title:title,
-            description:details,
-            status:"approved"
-        }
-    ]);
+    .insert([{
+        title:title,
+        description:details,
+        status:"pending"
+    }]);
 
     if(error){
+        document.getElementById("announcementMsg")
+        .innerHTML =
+        "<span class='error'>Save Failed</span>";
+    }
+    else{
 
-        console.log(error);
+        await addLog(
+        "Created Announcement: " + title
+        );
 
         document.getElementById("announcementMsg")
         .innerHTML =
-        "<span class='error'>❌ Save Failed</span>";
+        "<span class='success'>Announcement Submitted For Approval</span>";
 
-    }else{
-
-        document.getElementById("announcementMsg")
-        .innerHTML =
-        "<span class='success'>✅ Announcement Published</span>";
-
-        document.getElementById("announcementTitle").value = "";
-        document.getElementById("announcementText").value = "";
+        loadDashboard();
     }
 }
+
+async function loadStats(){
+
+    const videos =
+    await client.from("videos").select("*",{count:"exact",head:true});
+
+    const announcements =
+    await client.from("announcements").select("*",{count:"exact",head:true});
+
+    const gallery =
+    await client.from("gallery").select("*",{count:"exact",head:true});
+
+    const admins =
+    await client.from("admin_users").select("*",{count:"exact",head:true});
+
+    const pv =
+    await client.from("videos").select("*",{count:"exact",head:true})
+    .eq("status","pending");
+
+    const pa =
+    await client.from("announcements").select("*",{count:"exact",head:true})
+    .eq("status","pending");
+
+    document.getElementById("videoCount")
+    .innerHTML = videos.count || 0;
+
+    document.getElementById("announcementCount")
+    .innerHTML = announcements.count || 0;
+
+    document.getElementById("galleryCount")
+    .innerHTML = gallery.count || 0;
+
+    document.getElementById("adminCount")
+    .innerHTML = admins.count || 0;
+
+    document.getElementById("pendingCount")
+    .innerHTML =
+    (pv.count || 0) +
+    (pa.count || 0);
+}
+
+async function loadPendingVideos(){
+
+    const { data } =
+    await client
+    .from("videos")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
+
+    if(!data || data.length===0){
+        document.getElementById(
+        "pendingVideos"
+        ).innerHTML =
+        "No Pending Videos";
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(v=>{
+
+        html += `
+        <div class="card">
+        <b>${v.title}</b><br>
+        ${v.uploaded_by || "Unknown"}<br><br>
+
+        <button class="btn"
+        onclick="approveVideo('${v.id}')">
+        Approve
+        </button>
+
+        <button class="reject"
+        onclick="rejectVideo('${v.id}')">
+        Reject
+        </button>
+
+        <button class="delete"
+        onclick="deleteVideo('${v.id}')">
+        Delete
+        </button>
+        </div>
+        `;
+    });
+
+    document.getElementById(
+    "pendingVideos"
+    ).innerHTML = html;
+}
+
+async function approveVideo(id){
+
+    await client
+    .from("videos")
+    .update({
+        status:"approved",
+        approved_by:"Suresh"
+    })
+    .eq("id",id);
+
+    await addLog(
+    "Approved Video"
+    );
+
+    loadDashboard();
+}
+
+async function rejectVideo(id){
+
+    await client
+    .from("videos")
+    .update({
+        status:"rejected"
+    })
+    .eq("id",id);
+
+    await addLog(
+    "Rejected Video"
+    );
+
+    loadDashboard();
+}
+
+async function deleteVideo(id){
+
+    await client
+    .from("videos")
+    .delete()
+    .eq("id",id);
+
+    await addLog(
+    "Deleted Video"
+    );
+
+    loadDashboard();
+}
+
+async function loadPendingAnnouncements(){
+
+    const { data } =
+    await client
+    .from("announcements")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",
+    {ascending:false});
+
+    if(!data || data.length===0){
+
+        document.getElementById(
+        "pendingAnnouncements"
+        ).innerHTML =
+        "No Pending Announcements";
+
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(a=>{
+
+        html += `
+        <div class="card">
+        <b>${a.title}</b>
+        <p>${a.description || ""}</p>
+
+        <button class="btn"
+        onclick="approveAnnouncement('${a.id}')">
+        Approve
+        </button>
+
+        <button class="reject"
+        onclick="rejectAnnouncement('${a.id}')">
+        Reject
+        </button>
+        </div>
+        `;
+    });
+
+    document.getElementById(
+    "pendingAnnouncements"
+    ).innerHTML = html;
+}
+
+async function approveAnnouncement(id){
+
+    await client
+    .from("announcements")
+    .update({
+        status:"approved"
+    })
+    .eq("id",id);
+
+    await addLog(
+    "Approved Announcement"
+    );
+
+    loadDashboard();
+}
+
+async function rejectAnnouncement(id){
+
+    await client
+    .from("announcements")
+    .update({
+        status:"rejected"
+    })
+    .eq("id",id);
+
+    await addLog(
+    "Rejected Announcement"
+    );
+
+    loadDashboard();
+}
+
+async function loadAdmins(){
+
+    const { data } =
+    await client
+    .from("admin_users")
+    .select("*");
+
+    let html =
+    "<table><tr><th>Name</th><th>Email</th><th>Role</th></tr>";
+
+    data.forEach(a=>{
+
+        html += `
+        <tr>
+        <td>${a.name}</td>
+        <td>${a.email}</td>
+        <td>${a.role}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById(
+    "adminList"
+    ).innerHTML = html;
+}
+
+async function addLog(action){
+
+    await client
+    .from("audit_logs")
+    .insert([{
+        action:action,
+        performed_by:"Suresh"
+    }]);
+}
+
+async function loadLogs(){
+
+    const { data } =
+    await client
+    .from("audit_logs")
+    .select("*")
+    .order("created_at",
+    {ascending:false})
+    .limit(20);
+
+    let html = "";
+
+    data.forEach(l=>{
+
+        html += `
+        <p>
+        ${new Date(l.created_at)
+        .toLocaleString()}
+        -
+        ${l.action}
+        -
+        ${l.performed_by}
+        </p>
+        `;
+    });
+
+    document.getElementById(
+    "auditLogs"
+    ).innerHTML = html;
+}
+
+async function loadDashboard(){
+
+    await loadStats();
+    await loadPendingVideos();
+    await loadPendingAnnouncements();
+    await loadAdmins();
+    await loadLogs();
+}
+
+loadDashboard();
 
 </script>
 

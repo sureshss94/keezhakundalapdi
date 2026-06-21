@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login</title>
 
+<!-- ✅ CORRECT CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
 <style>
@@ -41,14 +42,10 @@ button{
     cursor:pointer;
 }
 
-h2{
-    text-align:center;
-}
-
-#msg{
+#error{
+    color:red;
     text-align:center;
     margin-top:10px;
-    color:red;
 }
 </style>
 </head>
@@ -56,43 +53,41 @@ h2{
 <body>
 
 <div class="card">
-    <h2>Admin Login</h2>
+    <h2 style="text-align:center;">Admin Login</h2>
 
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
 
     <button onclick="login()">Login</button>
 
-    <div id="msg"></div>
+    <div id="error"></div>
 </div>
 
 <script>
 const SUPABASE_URL = "https://uulptnmglchzvdsausrh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ✅ IMPORTANT: correct way
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function login(){
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { data, error } = await client.auth.signInWithPassword({
         email,
         password
     });
 
     if(error){
-        document.getElementById("msg").innerText = error.message;
+        document.getElementById("error").innerText = error.message;
+        console.log(error);
         return;
     }
 
-    // session is automatically stored by Supabase
-    document.getElementById("msg").style.color = "green";
-    document.getElementById("msg").innerText = "Login successful! Redirecting...";
-
-    setTimeout(() => {
-        window.location.href = "admin.html";
-    }, 1000);
+    alert("Login success");
+    window.location.href = "admin.html";
 }
 </script>
 

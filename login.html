@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
 <style>
 body{
-    font-family:Arial;
+    font-family: Arial;
     background:#f4f4f4;
     display:flex;
     justify-content:center;
@@ -22,7 +22,7 @@ body{
     padding:30px;
     border-radius:10px;
     width:350px;
-    box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
 input{
@@ -44,8 +44,13 @@ button{
 h2{
     text-align:center;
 }
-</style>
 
+#msg{
+    text-align:center;
+    margin-top:10px;
+    color:red;
+}
+</style>
 </head>
 
 <body>
@@ -58,18 +63,18 @@ h2{
 
     <button onclick="login()">Login</button>
 
-    <p id="msg" style="text-align:center;color:red;margin-top:10px;"></p>
+    <div id="msg"></div>
 </div>
 
 <script>
-const supabase = window.supabase.createClient(
-    "https://uulptnmglchzvdsausrh.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
-);
+const SUPABASE_URL = "https://uulptnmglchzvdsausrh.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function login(){
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -81,11 +86,13 @@ async function login(){
         return;
     }
 
-    // store session
-    localStorage.setItem("sb-session", JSON.stringify(data.session));
+    // session is automatically stored by Supabase
+    document.getElementById("msg").style.color = "green";
+    document.getElementById("msg").innerText = "Login successful! Redirecting...";
 
-    alert("Login successful!");
-    window.location.href = "admin.html";
+    setTimeout(() => {
+        window.location.href = "admin.html";
+    }, 1000);
 }
 </script>
 

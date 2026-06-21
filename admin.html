@@ -261,6 +261,46 @@ Loading...
 
 </div>
 
+
+<div class="card">
+<h2>📸 Upload Gallery Photo</h2>
+
+<input id="galleryTitle" placeholder="Photo Title">
+<input id="galleryFile" type="file" accept="image/*">
+
+<button class="btn" onclick="uploadGallery()">
+Upload Photo
+</button>
+
+<p id="galleryMsg"></p>
+</div>
+
+<div class="card">
+<h2>📸 Pending Gallery Photos</h2>
+<div id="pendingGallery">Loading...</div>
+</div>
+
+<div class="card">
+<h2>📡 Live Stream Management</h2>
+
+<input id="liveTitle" placeholder="Live Title">
+<input id="liveLink" placeholder="YouTube Live Link">
+
+<button class="btn" onclick="saveLive()">
+Save Live Stream
+</button>
+
+<p id="liveMsg"></p>
+</div>
+
+<div class="card">
+<h2>📊 Engagement Analytics</h2>
+
+<p>❤️ Total Likes: <span id="totalLikes">0</span></p>
+<p>💬 Total Comments: <span id="totalComments">0</span></p>
+</div>
+
+
 </div>
 
 <script>

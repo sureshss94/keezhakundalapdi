@@ -1,95 +1,640 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login</title>
+\<!DOCTYPE html>
 
-<!-- ✅ CORRECT CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+\<html lang="en">
 
-<style>
-body{
-    font-family: Arial;
-    background:#f4f4f4;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+\<head>
+
+\<meta charset="UTF-8">
+
+\<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+\<title>Keezhakundalapaadi Village Gallery\</title>
+
+
+
+\<script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)">\</script>
+
+
+
+\<style>
+
+
+
+\*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing\:border-box;
+
 }
+
+
+
+body{
+
+    font-family\:Arial,sans-serif;
+
+    background:#f4f4f4;
+
+}
+
+
+
+header{
+
+    background\:green;
+
+    color\:white;
+
+    padding:25px;
+
+    text-align\:center;
+
+}
+
+
+
+header h1{
+
+    margin-bottom:10px;
+
+}
+
+
+
+nav{
+
+    background:#006400;
+
+    padding:15px;
+
+    text-align\:center;
+
+}
+
+
+
+nav a{
+
+    color\:white;
+
+    text-decoration\:none;
+
+    margin:0 15px;
+
+    font-weight\:bold;
+
+}
+
+
+
+nav a\:hover{
+
+    text-decoration\:underline;
+
+}
+
+
+
+.container{
+
+    max-width:1400px;
+
+    margin\:auto;
+
+    padding:30px;
+
+}
+
+
 
 .card{
-    background:white;
-    padding:30px;
+
+    background\:white;
+
+    padding:20px;
+
     border-radius:10px;
-    width:350px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+
 }
 
-input{
+
+
+.gallery-grid{
+
+    display\:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:25px;
+
+}
+
+
+
+.photo-card{
+
+    background\:white;
+
+    border-radius:10px;
+
+    overflow\:hidden;
+
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+
+    transition:0.3s;
+
+}
+
+
+
+.photo-card\:hover{
+
+    transform\:translateY(-5px);
+
+}
+
+
+
+.photo-card img{
+
     width:100%;
-    padding:10px;
-    margin-top:10px;
+
+    height:250px;
+
+    object-fit\:cover;
+
 }
 
-button{
-    width:100%;
-    padding:10px;
-    margin-top:15px;
-    background:green;
-    color:white;
-    border:none;
-    cursor:pointer;
+
+
+.photo-content{
+
+    padding:15px;
+
 }
 
-#error{
-    color:red;
-    text-align:center;
-    margin-top:10px;
+
+
+.photo-content h3{
+
+    color\:green;
+
+    margin-bottom:10px;
+
 }
-</style>
-</head>
 
-<body>
 
-<div class="card">
-    <h2 style="text-align:center;">Admin Login</h2>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+.photo-content p{
 
-    <button onclick="login()">Login</button>
+    color:#666;
 
-    <div id="error"></div>
-</div>
+    font-size:14px;
 
-<script>
-const SUPABASE_URL = "https://uulptnmglchzvdsausrh.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces";
+}
 
-// ✅ IMPORTANT: correct way
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function login(){
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+.loading{
 
-    const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password
-    });
+    text-align\:center;
 
-    if(error){
-        document.getElementById("error").innerText = error.message;
-        console.log(error);
-        return;
+    padding:50px;
+
+    font-size:20px;
+
+}
+
+
+
+.empty{
+
+    text-align\:center;
+
+    font-size:22px;
+
+    padding:50px;
+
+    color:#666;
+
+}
+
+
+
+footer{
+
+    background:#222;
+
+    color\:white;
+
+    text-align\:center;
+
+    padding:20px;
+
+    margin-top:40px;
+
+}
+
+
+
+@media(max-width:768px){
+
+
+
+    .container{
+
+        padding:15px;
+
     }
 
-    alert("Login success");
-    window.location.href = "admin.html";
-}
-</script>
 
-</body>
-</html>
+
+    .photo-card img{
+
+        height:220px;
+
+    }
+
+
+
+    nav a{
+
+        display\:block;
+
+        margin:10px 0;
+
+    }
+
+}
+
+
+
+\</style>
+
+
+
+\</head>
+
+
+
+\<body>
+
+
+
+\<header>
+
+
+
+\<h1>📸 Keezhakundalapaadi Village Gallery\</h1>
+
+
+
+\<p>
+
+Temple Festivals • Village Events • Community Photos
+
+\</p>
+
+
+
+\</header>
+
+
+
+\<nav>
+
+
+
+\<a href="index.html">🏡 Home\</a>
+
+\<a href="gallery.html">📸 Gallery\</a>
+
+\<a href="login.html">🔐 Admin Login\</a>
+
+
+
+\</nav>
+
+
+
+\<div class="container">
+
+
+
+\<div class="card">
+
+
+
+\<h2 style="margin-bottom:20px;">
+
+📸 Village Photo Gallery
+
+\</h2>
+
+
+
+\<div
+
+id="galleryContainer"
+
+class="loading">
+
+
+
+Loading Photos...
+
+
+
+\</div>
+
+
+
+\</div>
+
+
+
+\</div>
+
+
+
+\<footer>
+
+
+
+\<p>
+
+© 2026 Keezhakundalapaadi Village Portal
+
+\</p>
+
+
+
+\<p>
+
+Managed by Super Admin Suresh
+
+\</p>
+
+
+
+\</footer>
+
+
+
+\<script>
+
+
+
+const client =
+
+supabase.createClient(
+
+"[https://uulptnmglchzvdsausrh.supabase.co](https://uulptnmglchzvdsausrh.supabase.co)",
+
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy\_3u\_ces"
+
+);
+
+
+
+async function loadGallery(){
+
+
+
+    const { data,error } =
+
+    await client
+
+    .from("gallery")
+
+    .select("\*")
+
+    .eq("status","approved")
+
+    .order("created\_at",
+
+    {ascending\:false});
+
+
+
+    const container =
+
+    document.getElementById(
+
+    "galleryContainer"
+
+    );
+
+
+
+    if(error){
+
+
+
+        console.log(error);
+
+
+
+        container.innerHTML =
+
+        \`
+
+        \<div class="empty">
+
+        ❌ Unable to load gallery.
+
+        \</div>
+
+        \`;
+
+
+
+        return;
+
+    }
+
+
+
+    if(!data ||
+
+       data.length===0){
+
+
+
+        container.innerHTML =
+
+        \`
+
+        \<div class="empty">
+
+        📸 No photos available.
+
+        \</div>
+
+        \`;
+
+
+
+        return;
+
+    }
+
+
+
+    let html =
+
+    \`\<div class="gallery-grid">\`;
+
+
+
+    data.forEach(photo=>{
+
+
+
+        html += \`
+
+
+
+        \<div class="photo-card">
+
+
+
+            \<img
+
+            src="${photo.image\_url}"
+
+            alt="${photo.title}">
+
+
+
+            \<div class="photo-content">
+
+
+
+                \<h3>
+
+                ${photo.title}
+
+                \</h3>
+
+
+
+                \<p>
+
+
+
+                Uploaded:
+
+                ${
+
+                new Date(
+
+                photo.created\_at
+
+                ).toLocaleDateString()
+
+                }
+
+
+
+                \</p>
+
+
+
+            \</div>
+
+
+
+        \</div>
+
+
+
+        \`;
+
+    });
+
+
+
+    html += \`\</div>\`;
+
+
+
+    container.innerHTML =
+
+    html;
+
+}
+
+
+
+loadGallery();
+
+
+
+\</script>
+
+
+
+\</body>
+
+\</html>
+
+
+
+Login
+
+:
+
+```
+<style>
+    body{
+        font-family:Arial;
+        background:#f4f4f4;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+    }
+
+    .card{
+        background:white;
+        padding:30px;
+        border-radius:10px;
+        width:350px;
+        box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+    }
+
+    input{
+        width:100%;
+        padding:10px;
+        margin-top:10px;
+    }
+
+    button{
+        width:100%;
+        padding:10px;
+        margin-top:15px;
+        background:green;
+        color:white;
+        border:none;
+        cursor:pointer;
+    }
+
+    h2{
+        text-align:center;
+    }
+</style>
+```
+
+Login
+
+

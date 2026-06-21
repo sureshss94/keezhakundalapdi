@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +10,14 @@
 
 <style>
 
-body{
-    font-family:Arial;
+*{
     margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
     background:#f4f4f4;
 }
 
@@ -23,43 +28,93 @@ header{
     padding:30px;
 }
 
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
+header h1{
+    margin-bottom:10px;
+}
+
+nav{
+    background:#006400;
+    text-align:center;
+    padding:15px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    text-decoration:underline;
+}
+
+.section{
+    padding:30px;
 }
 
 .card{
     background:white;
     padding:20px;
-    margin-top:20px;
     border-radius:10px;
+    margin-bottom:20px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 .video-card{
-    margin-bottom:40px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:25px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-button{
-    padding:10px 15px;
+iframe{
+    width:100%;
+    height:400px;
+    border:none;
+    border-radius:10px;
+}
+
+.btn{
+    display:inline-block;
+    background:green;
+    color:white;
+    padding:10px 20px;
+    text-decoration:none;
     border:none;
     border-radius:5px;
     cursor:pointer;
-    color:white;
-    background:green;
+    margin-top:10px;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.gallery img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:10px;
 }
 
 .comment-box{
+    background:#f9f9f9;
     border:1px solid #ddd;
     padding:10px;
     margin-top:10px;
     border-radius:5px;
 }
 
-iframe{
-    width:100%;
-    height:450px;
+footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:20px;
 }
 
 @media(max-width:768px){
@@ -68,10 +123,13 @@ iframe{
         height:250px;
     }
 
+    nav a{
+        display:block;
+        margin:10px 0;
+    }
 }
 
 </style>
-
 </head>
 
 <body>
@@ -80,17 +138,32 @@ iframe{
 
 <h1>🏡 Keezhakundalapaadi Village Portal</h1>
 
-<p>Welcome to our village website</p>
+<p>
+Village News • Events • Videos • Announcements
+</p>
 
-<a href="login.html">
-<button>
+<br>
+
+<a
+href="login.html"
+class="btn"
+style="background:white;color:green;">
 🔐 Admin Login
-</button>
 </a>
 
 </header>
 
-<div class="container">
+<nav>
+
+<a href="#updates">Updates</a>
+<a href="#videos">Videos</a>
+<a href="#gallery">Gallery</a>
+<a href="#live">Live</a>
+<a href="#contact">Contact</a>
+
+</nav>
+
+<section class="section">
 
 <div class="card">
 
@@ -102,17 +175,114 @@ Loading announcements...
 
 </div>
 
-<div class="card">
+</section>
 
-<h2>📹 Village Videos</h2>
+<section
+id="videos"
+class="section">
+
+<h2 style="margin-bottom:20px;">
+📹 Village Videos
+</h2>
 
 <div id="videoContainer">
 Loading videos...
 </div>
 
+</section>
+
+<section
+id="gallery"
+class="section">
+
+<div class="card">
+
+<h2>📸 Village Gallery</h2>
+
+<div id="galleryContainer">
+
+<div class="gallery">
+
+<img
+src="https://picsum.photos/600/400?1">
+
+<img
+src="https://picsum.photos/600/400?2">
+
+<img
+src="https://picsum.photos/600/400?3">
+
+</div>
+
+<p style="margin-top:20px;">
+Gallery upload feature coming soon.
+</p>
+
 </div>
 
 </div>
+
+</section>
+
+<section
+id="live"
+class="section">
+
+<div class="card">
+
+<h2>📡 Live Stream</h2>
+
+<p>
+Village Live Events will appear here.
+</p>
+
+<br>
+
+<a
+href="https://youtube.com"
+target="_blank"
+class="btn">
+
+Watch Live
+
+</a>
+
+</div>
+
+</section>
+
+<section
+id="contact"
+class="section">
+
+<div class="card">
+
+<h2>📞 Contact</h2>
+
+<p>
+Website Admin:
+<b>Suresh (Super Admin)</b>
+</p>
+
+<p>
+Keezhakundalapaadi Village Portal
+</p>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>
+© 2026 Keezhakundalapaadi Village Portal
+</p>
+
+<p>
+Managed by Super Admin Suresh
+</p>
+
+</footer>
 
 <script>
 
@@ -124,30 +294,33 @@ supabase.createClient(
 
 async function loadAnnouncements(){
 
-    const { data, error } =
+    const { data,error } =
     await client
-        .from("announcements")
-        .select("*")
-        .eq("status","approved")
-        .order("created_at",{
-            ascending:false
-        });
+    .from("announcements")
+    .select("*")
+    .eq("status","approved")
+    .order("created_at",
+    {ascending:false});
 
     if(error){
+        console.log(error);
 
-        document.getElementById(
-            "announcementContainer"
-        ).innerHTML =
-        "Failed to load.";
+        document
+        .getElementById(
+        "announcementContainer")
+        .innerHTML =
+        "Unable to load announcements.";
 
         return;
     }
 
-    if(data.length===0){
+    if(!data ||
+       data.length===0){
 
-        document.getElementById(
-            "announcementContainer"
-        ).innerHTML =
+        document
+        .getElementById(
+        "announcementContainer")
+        .innerHTML =
         "No announcements.";
 
         return;
@@ -155,60 +328,64 @@ async function loadAnnouncements(){
 
     let html = "";
 
-    data.forEach(a=>{
+    data.forEach(item=>{
 
         html += `
         <div class="comment-box">
 
-            <h3>${a.title}</h3>
+        <h3>${item.title}</h3>
 
-            <p>
-                ${a.description || ""}
-            </p>
+        <p>
+        ${item.description || ""}
+        </p>
 
-            <small>
-                ${new Date(
-                    a.created_at
-                ).toLocaleString()}
-            </small>
+        <small>
+        ${new Date(
+        item.created_at
+        ).toLocaleString()}
+        </small>
 
         </div>
         `;
     });
 
-    document.getElementById(
-        "announcementContainer"
-    ).innerHTML =
-    html;
+    document
+    .getElementById(
+    "announcementContainer")
+    .innerHTML = html;
 }
 
 async function loadVideos(){
 
-    const { data, error } =
+    const { data,error } =
     await client
-        .from("videos")
-        .select("*")
-        .eq("status","approved")
-        .order("created_at",{
-            ascending:false
-        });
+    .from("videos")
+    .select("*")
+    .eq("status","approved")
+    .order("created_at",
+    {ascending:false});
 
     if(error){
 
-        document.getElementById(
-            "videoContainer"
-        ).innerHTML =
-        "Failed to load videos.";
+        console.log(error);
+
+        document
+        .getElementById(
+        "videoContainer")
+        .innerHTML =
+        "Unable to load videos.";
 
         return;
     }
 
-    if(data.length===0){
+    if(!data ||
+       data.length===0){
 
-        document.getElementById(
-            "videoContainer"
-        ).innerHTML =
-        "No videos uploaded.";
+        document
+        .getElementById(
+        "videoContainer")
+        .innerHTML =
+        "No videos available.";
 
         return;
     }
@@ -217,67 +394,84 @@ async function loadVideos(){
 
     data.forEach(video=>{
 
-        let youtubeId = "";
+        let youtubeId="";
 
-        if(video.youtube_link){
+        if(
+        video.youtube_link &&
+        video.youtube_link.includes(
+        "watch?v=")
+        ){
 
             youtubeId =
             video.youtube_link
-            .split("v=")[1];
+            .split("v=")[1]
+            .split("&")[0];
+        }
+        else if(
+        video.youtube_link &&
+        video.youtube_link.includes(
+        "youtu.be/")
+        ){
 
-            if(youtubeId &&
-               youtubeId.includes("&")){
+            youtubeId =
+            video.youtube_link
+            .split("youtu.be/")[1]
+            .split("?")[0];
+        }
 
-                youtubeId =
-                youtubeId.split("&")[0];
-            }
+        if(!youtubeId){
+            return;
         }
 
         html += `
 
         <div class="video-card">
 
-            <h3>${video.title}</h3>
+        <h3>${video.title}</h3>
 
-            <iframe
-            src="https://www.youtube.com/embed/${youtubeId}"
-            frameborder="0"
-            allowfullscreen>
-            </iframe>
+        <iframe
+        src="https://www.youtube.com/embed/${youtubeId}"
+        allowfullscreen>
+        </iframe>
 
-            <br><br>
+        <br><br>
 
-            <button
-            onclick="likeVideo('${video.id}')">
-            ❤️ Like
-            </button>
+        <button
+        class="btn"
+        onclick="likeVideo('${video.id}')">
 
-            <span
-            id="likeCount-${video.id}">
-            0 Likes
-            </span>
+        ❤️ Like
 
-            <br><br>
+        </button>
 
-            <button
-            onclick="addComment('${video.id}')">
-            💬 Add Comment
-            </button>
+        <span
+        id="likeCount-${video.id}">
+        0 Likes
+        </span>
 
-            <div
-            id="comments-${video.id}">
-            Loading comments...
-            </div>
+        <br><br>
 
+        <button
+        class="btn"
+        onclick="addComment('${video.id}')">
+
+        💬 Add Comment
+
+        </button>
+
+        <div
+        id="comments-${video.id}">
+        Loading comments...
         </div>
 
+        </div>
         `;
     });
 
-    document.getElementById(
-        "videoContainer"
-    ).innerHTML =
-    html;
+    document
+    .getElementById(
+    "videoContainer")
+    .innerHTML = html;
 
     data.forEach(video=>{
 
@@ -290,26 +484,17 @@ async function loadVideos(){
 async function likeVideo(videoId){
 
     const name =
-    prompt("Enter your name");
+    prompt(
+    "Enter your name");
 
     if(!name) return;
 
-    const { error } =
     await client
-        .from("likes")
-        .insert([{
-            video_id:videoId,
-            user_name:name
-        }]);
-
-    if(error){
-
-        alert("Like failed.");
-
-        return;
-    }
-
-    alert("❤️ Thank you!");
+    .from("likes")
+    .insert([{
+        video_id:videoId,
+        user_name:name
+    }]);
 
     loadLikeCount(videoId);
 }
@@ -318,55 +503,42 @@ async function loadLikeCount(videoId){
 
     const { count } =
     await client
-        .from("likes")
-        .select("*",{
-            count:"exact",
-            head:true
-        })
-        .eq(
-            "video_id",
-            videoId
-        );
+    .from("likes")
+    .select("*",{
+        count:"exact",
+        head:true
+    })
+    .eq("video_id",
+    videoId);
 
-    document.getElementById(
-        `likeCount-${videoId}`
-    ).innerHTML =
+    document
+    .getElementById(
+    `likeCount-${videoId}`)
+    .innerHTML =
     `${count || 0} Likes`;
 }
 
 async function addComment(videoId){
 
     const name =
-    prompt("Your name");
+    prompt(
+    "Enter your name");
 
     if(!name) return;
 
     const comment =
-    prompt("Comment");
+    prompt(
+    "Enter your comment");
 
     if(!comment) return;
 
-    const { error } =
     await client
-        .from("comments")
-        .insert([{
-            video_id:videoId,
-            user_name:name,
-            comment:comment
-        }]);
-
-    if(error){
-
-        alert(
-        "Comment failed."
-        );
-
-        return;
-    }
-
-    alert(
-    "💬 Comment Added"
-    );
+    .from("comments")
+    .insert([{
+        video_id:videoId,
+        user_name:name,
+        comment:comment
+    }]);
 
     loadComments(videoId);
 }
@@ -375,62 +547,54 @@ async function loadComments(videoId){
 
     const { data } =
     await client
-        .from("comments")
-        .select("*")
-        .eq(
-            "video_id",
-            videoId
-        )
-        .order(
-            "created_at",
-            {
-                ascending:false
-            }
-        );
+    .from("comments")
+    .select("*")
+    .eq("video_id",
+    videoId)
+    .order(
+    "created_at",
+    {ascending:false});
 
-    let html = "";
+    let html="";
 
     if(!data ||
        data.length===0){
 
         html =
         "No comments yet.";
-
     }
     else{
 
         data.forEach(c=>{
 
             html += `
-
             <div class="comment-box">
 
-                <b>
-                ${c.user_name}
-                </b>
+            <b>
+            ${c.user_name}
+            </b>
 
-                <br>
+            <br>
 
-                ${c.comment}
+            ${c.comment}
 
-                <br>
+            <br>
 
-                <small>
-                ${new Date(
-                    c.created_at
-                ).toLocaleString()}
-                </small>
+            <small>
+            ${new Date(
+            c.created_at
+            ).toLocaleString()}
+            </small>
 
             </div>
-
             `;
         });
     }
 
-    document.getElementById(
-        `comments-${videoId}`
-    ).innerHTML =
-    html;
+    document
+    .getElementById(
+    `comments-${videoId}`)
+    .innerHTML = html;
 }
 
 loadAnnouncements();

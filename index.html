@@ -4,11 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Keezhakundalapaadi Village Portal</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -92,6 +90,14 @@ margin-top:10px;
 
 .video-card{
 margin-top:20px;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+.video-card h3{
+margin-bottom:10px;
+color:#006400;
 }
 
 footer{
@@ -101,8 +107,9 @@ text-align:center;
 padding:20px;
 margin-top:20px;
 }
-
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </head>
 
@@ -131,9 +138,7 @@ Admin Dashboard
 </section>
 
 <section id="updates" class="section">
-
 <div class="card">
-
 <h2>📢 Latest Updates</h2>
 
 <ul>
@@ -141,13 +146,10 @@ Admin Dashboard
 <li>Upcoming Temple Festival Updates</li>
 <li>Village Development Announcements</li>
 </ul>
-
 </div>
-
 </section>
 
 <section id="videos" class="section">
-
 <div class="card">
 
 <h2>📹 Village Videos</h2>
@@ -157,31 +159,23 @@ Loading videos...
 </div>
 
 </div>
-
 </section>
 
 <section id="gallery" class="section">
-
 <div class="card">
 
 <h2>📸 Village Gallery</h2>
 
 <div class="gallery">
-
 <img src="https://picsum.photos/600/400?1">
-
 <img src="https://picsum.photos/600/400?2">
-
 <img src="https://picsum.photos/600/400?3">
-
 </div>
 
 </div>
-
 </section>
 
 <section id="live" class="section">
-
 <div class="card">
 
 <h2>📺 Live Stream</h2>
@@ -194,32 +188,23 @@ target="_blank">
 Watch Live </a>
 
 </div>
-
 </section>
 
 <section class="section">
-
 <div class="card">
 
 <h2>📞 Contact</h2>
 
 <p>Website Admin : Suresh</p>
-
 <p>Keezhakundalapaadi Village Portal</p>
 
 </div>
-
 </section>
 
 <footer>
-
 <p>© 2026 Keezhakundalapaadi Village Portal</p>
-
 <p>Managed by Super Admin Suresh</p>
-
 </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
@@ -244,11 +229,10 @@ document.getElementById("videoContainer").innerHTML =
 "❌ Unable to load videos";
 
 console.log(error);
-
 return;
 }
 
-if(data.length===0){
+if(!data || data.length === 0){
 
 document.getElementById("videoContainer").innerHTML =
 "No videos available";
@@ -262,16 +246,24 @@ data.forEach(video=>{
 
 let youtubeId = "";
 
-if(video.youtube_link &&
-video.youtube_link.includes("v=")){
+if(video.youtube_link){
+
+if(video.youtube_link.includes("watch?v=")){
 
 youtubeId =
-video.youtube_link
-.split("v=")[1]
-.split("&")[0];
+video.youtube_link.split("v=")[1].split("&")[0];
+
+}
+else if(video.youtube_link.includes("youtu.be/")){
+
+youtubeId =
+video.youtube_link.split("youtu.be/")[1].split("?")[0];
+
+}
+
+if(youtubeId){
 
 html += `
-
 <div class="video-card">
 
 <h3>${video.title}</h3>
@@ -280,12 +272,13 @@ html += `
 width="100%"
 height="400"
 src="https://www.youtube.com/embed/${youtubeId}"
+title="${video.title}"
 allowfullscreen>
 </iframe>
 
 </div>
-
 `;
+}
 
 }
 

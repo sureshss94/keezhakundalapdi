@@ -254,15 +254,16 @@ async function loadGallery(){
         <div class="photo-card">
 
             <img
-            src="${photo.image_url}"
-            alt="${photo.title}">
+           src="${photo.image_url}"
+            alt="${photo.title}"
+            onerror="this.style.border='5px solid red';">
 
             <div class="photo-content">
 
                 <h3>
                 ${photo.title}
                 </h3>
-
+             <p>${photo.image_url}</p>
                 <p>
 
                 Uploaded:

@@ -360,11 +360,282 @@ async function loadAnalytics(){
     document.getElementById("totalLikes").innerText = likes.count || 0;
     document.getElementById("totalComments").innerText = comments.count || 0;
 }
+/* ==========================
+   PENDING ANNOUNCEMENTS
+========================== */
 
+async function loadPendingAnnouncements(){
+
+    const { data,error } =
+    await client
+    .from("announcements")
+    .select("*")
+    .eq("status","pending")
+    .order("created_at",{ascending:false});
+
+    let html="";
+
+    if(data){
+
+        data.forEach(a=>{
+
+            html += `
+            <div class="card">
+
+                <b>${a.title}</b><br><br>
+
+                ${a.description || ""}
+
+                <br><br>
+
+                <button
+                class="btn"
+                onclick="approveAnnouncement('${a.id}')">
+
+                Approve
+
+                </button>
+
+                <button
+                class="reject"
+                onclick="rejectAnnouncement('${a.id}')">
+
+                Reject
+
+                </button>
+
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById(
+    "pendingAnnouncements")
+    .innerHTML =
+    html || "No Pending Announcements";
+}
+
+async function approveAnnouncement(id){
+
+    await client
+    .from("announcements")
+    .update({
+        status:"approved"
+    })
+    .eq("id",id);
+
+    loadDashboard();
+}
+
+async function rejectAnnouncement(id){
+
+    await client
+    .from("announcements")
+    .update({
+        status:"rejected"
+    })
+    .eq("id",id);
+
+    loadDashboard();
+}
+
+/* ==========================
+   PENDING GALLERY
+========================== */
+
+async function loadPendingGallery(){
+
+    const { data,error } =
+    await client
+    .from("gallery")
+    .select("*")
+    .eq("status","pending");
+
+    let html="";
+
+    if(data){
+
+        data.forEach(g=>{
+
+            html += `
+            <div class="card">
+
+            <img
+            src="${g.image_url}"
+            style="width:200px;border-radius:10px;">
+
+            <br><br>
+
+            <b>${g.title}</b>
+
+            <br><br>
+
+            <button
+            class="btn"
+            onclick="approveGallery('${g.id}')">
+
+            Approve
+
+            </button>
+
+            <button
+            class="reject"
+            onclick="rejectGallery('${g.id}')">
+
+            Reject
+
+            </button>
+
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById(
+    "pendingGallery")
+    .innerHTML =
+    html || "No Pending Photos";
+}
+
+async function approveGallery(id){
+
+    await client
+    .from("gallery")
+    .update({
+        status:"approved",
+        approved_by:"Suresh"
+    })
+    .eq("id",id);
+
+    loadDashboard();
+}
+
+async function rejectGallery(id){
+
+    await client
+    .from("gallery")
+    .update({
+        status:"rejected"
+    })
+    .eq("id",id);
+
+    loadDashboard();
+}
+
+/* ==========================
+   ADMINS
+========================== */
+
+async function loadAdmins(){
+
+    const { data } =
+    await client
+    .from("admin_users")
+    .select("*");
+
+    let html =
+    "<table><tr><th>Name</th><th>Email</th><th>Role</th></tr>";
+
+    if(data){
+
+        data.forEach(a=>{
+
+            html += `
+            <tr>
+            <td>${a.name || "-"}</td>
+            <td>${a.email || "-"}</td>
+            <td>${a.role || "-"}</td>
+            </tr>
+            `;
+        });
+    }
+
+    html += "</table>";
+
+    document.getElementById(
+    "adminList")
+    .innerHTML = html;
+}
+
+/* ==========================
+   AUDIT LOGS
+========================== */
+
+async function loadAuditLogs(){
+
+    const { data } =
+    await client
+    .from("audit_logs")
+    .select("*")
+    .order("created_at",
+    {ascending:false})
+    .limit(20);
+
+    let html =
+    "<table><tr><th>User</th><th>Action</th><th>Date</th></tr>";
+
+    if(data){
+
+        data.forEach(log=>{
+
+            html += `
+            <tr>
+            <td>${log.user_name || "-"}</td>
+            <td>${log.action || "-"}</td>
+            <td>${new Date(log.created_at).toLocaleString()}</td>
+            </tr>
+            `;
+        });
+    }
+
+    html += "</table>";
+
+    document.getElementById(
+    "auditLogs")
+    .innerHTML = html;
+}
+
+/* ==========================
+   LIVE STREAM
+========================== */
+
+async function saveLive(){
+
+    const title =
+    document.getElementById("liveTitle").value;
+
+    const link =
+    document.getElementById("liveLink").value;
+
+    const { error } =
+    await client
+    .from("live_stream")
+    .insert([{
+        title:title,
+        youtube_link:link,
+        status:"active"
+    }]);
+
+    document.getElementById("liveMsg").innerHTML =
+    error
+    ? "<span class='error'>Failed</span>"
+    : "<span class='success'>Saved</span>";
+}
 /* DASHBOARD */
 async function loadDashboard(){
+
     await loadStats();
+
     await loadPendingVideos();
+
+    await loadPendingAnnouncements();
+
+    await loadPendingGallery();
+
+    await loadAdmins();
+
+    await loadAuditLogs();
+
     await loadAnalytics();
 }
 

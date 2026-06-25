@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Upload Photo & Video</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:green;
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:15px;
+    box-sizing:border-box;
+}
+
+button{
+    background:green;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#006400;
+}
+
+.success{
+    color:green;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    font-weight:bold;
+}
+
+footer{
+    background:#222;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:40px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>📤 Village Media Upload</h1>
+
+<p>
+Upload Photos and Videos for Approval
+</p>
+
+</header>
+
+<div class="container">
+
+<!-- IMAGE -->
+
+<div class="card">
+
+<h2>📸 Upload Photo</h2>
+
+<input
+type="text"
+id="imageTitle"
+placeholder="Photo Title">
+
+<input
+type="file"
+id="imageFile"
+accept="image/*">
+
+<button onclick="uploadImage()">
+Upload Photo
+</button>
+
+<p id="imageMsg"></p>
+
+</div>
+
+<!-- VIDEO -->
+
+<div class="card">
+
+<h2>🎥 Upload Video</h2>
+
+<input
+type="text"
+id="videoTitle"
+placeholder="Video Title">
+
+<input
+type="text"
+id="videoUrl"
+placeholder="YouTube Video URL">
+
+<button onclick="uploadVideo()">
+Upload Video
+</button>
+
+<p id="videoMsg"></p>
+
+</div>
+
+</div>
+
+<footer>
+
+© 2026 Keezhakundalapaadi Village Portal
+
+</footer>
+
+<script>
+
+const client =
+supabase.createClient(
+"https://uulptnmglchzvdsausrh.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1bHB0bm1nbGNoenZkc2F1c3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDM1MDMsImV4cCI6MjA5NzYxOTUwM30.ONrOp74l3aPM6b84v9FyEGFOrG5y88PsFSyy_3u_ces"
+);
+
+async function uploadImage(){
+
+    const title =
+    document.getElementById("imageTitle").value;
+
+    const file =
+    document.getElementById("imageFile").files[0];
+
+    if(!file){
+        alert("Select Image");
+        return;
+    }
+
+    const fileName =
+    Date.now() + "_" + file.name;
+
+    const upload =
+    await client.storage
+    .from("gallery")
+    .upload(fileName,file);
+
+    if(upload.error){
+
+        document.getElementById(
+        "imageMsg").innerHTML =
+        "<span class='error'>Upload Failed</span>";
+
+        console.log(upload.error);
+
+        return;
+    }
+
+    const { data } =
+    client.storage
+    .from("gallery")
+    .getPublicUrl(fileName);
+
+    const insert =
+    await client
+    .from("gallery")
+    .insert([{
+        title:title,
+        image_url:data.publicUrl,
+        status:"pending",
+        uploaded_by:"Public User"
+    }]);
+
+    if(insert.error){
+
+        document.getElementById(
+        "imageMsg").innerHTML =
+        "<span class='error'>Database Insert Failed</span>";
+
+        console.log(insert.error);
+
+        return;
+    }
+
+    document.getElementById(
+    "imageMsg").innerHTML =
+    "<span class='success'>Photo Uploaded Successfully. Waiting For Approval.</span>";
+}
+
+async function uploadVideo(){
+
+    const title =
+    document.getElementById("videoTitle").value;
+
+    const url =
+    document.getElementById("videoUrl").value;
+
+    const { error } =
+    await client
+    .from("videos")
+    .insert([{
+        title:title,
+        youtube_link:url,
+        status:"pending",
+        uploaded_by:"Public User"
+    }]);
+
+    if(error){
+
+        document.getElementById(
+        "videoMsg").innerHTML =
+        "<span class='error'>Video Upload Failed</span>";
+
+        console.log(error);
+
+        return;
+    }
+
+    document.getElementById(
+    "videoMsg").innerHTML =
+    "<span class='success'>Video Submitted Successfully. Waiting For Approval.</span>";
+}
+
+</script>
+
+</body>
+
+</html>
